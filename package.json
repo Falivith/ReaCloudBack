@@ -1,0 +1,25 @@
+{
+  "name": "reacloudback",
+  "version": "1.0.0",
+  "description": "ReaCloud is a digital indexer for Open Educational Resources, which allows it users to search, evaluate or publish metadata of this resources 🎓",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Falivith/ReaCloudBack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Falivith/ReaCloudBack/issues"
+  },
+  "homepage": "https://github.com/Falivith/ReaCloudBack#readme",
+  "devDependencies": {
+    "eslint": "^8.35.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react": "^7.32.2"
+  }
+}
