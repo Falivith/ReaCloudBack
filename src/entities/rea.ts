@@ -1,8 +1,8 @@
 export interface ReaProps {
-    id: bigint
+    id: number
     title: string
-    thumb: URL
-    likesCount: bigint
+    thumb: string
+    likesCount: number
     reaType: string
     knowledgeArea: string
     license: string
@@ -57,5 +57,9 @@ export class Rea {
 
     get instructions() {
         return this.props.instructions
+    }
+
+    constructor(props: ReaProps){
+        this.props = props; 
     }
 }
