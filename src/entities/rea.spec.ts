@@ -10,7 +10,7 @@ test ('ReaConsult', () => {
         reaType: "Exemplo",
         knowledgeArea: "Exemplo",
         license: "Exemplo",
-        public: "Exemplo",
+        target: "Exemplo",
         language: "Exemplo",
         description: "Exemplo",
         instructions: "Exemplo"

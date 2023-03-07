@@ -6,7 +6,7 @@ export interface ReaProps {
     reaType: string
     knowledgeArea: string
     license: string
-    public: string
+    target: string
     language: string
     description: string
     instructions: string
@@ -43,8 +43,8 @@ export class Rea {
         return this.props.license
     }
 
-    get public () {
-        return this.props.public
+    get target () {
+        return this.props.target
     }
 
     get language () {
