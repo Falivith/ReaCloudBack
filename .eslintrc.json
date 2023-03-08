@@ -16,6 +16,7 @@
         "react"
     ],
     "rules": {
-        "no-useless-constructor": "off"
+        "no-useless-constructor": "off",
+        "linebreak-style": 0
     }
 }
