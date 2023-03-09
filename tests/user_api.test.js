@@ -1,11 +1,12 @@
 const supertest = require("supertest");
+const app = require('../app')
+const api = supertest(app)
 const { User } = require("../models/user.js");
-const {app} = require("../index.js")
 import { describe, expect, it,test } from "vitest";
 
 
 
-const api = supertest(app)
+
 
 test("creates a new user", async () => {
     const response = await api
@@ -19,7 +20,6 @@ test("creates a new user", async () => {
 
     expect(response.status).toBe(201);
     
-
     const user = await User.findByPk(response.body.id);
     expect(user).toBeDefined();
     expect(user.nome).toBe("John Doe");
