@@ -1,11 +1,9 @@
 const supertest = require("supertest");
 const app = require('../app')
 const api = supertest(app)
-const { User } = require("../models/user.js");
-import { describe, expect, it,test } from "vitest";
-
-
-
+const User = require("../models/user.js");
+import { describe, expect, it,test,beforeEach } from "vitest";
+import { connectToDatabase } from "../util/db";
 
 
 test("creates a new user", async () => {

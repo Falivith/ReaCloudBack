@@ -12,7 +12,7 @@ usersRouter.get('/', async (req, res) => {
     try {
       console.log(req.body)
       const user = await User.create(req.body)
-      res.json(user)
+      res.status(201).json(user)
     } 
     catch(error) {
       return res.status(400).json({ error })
