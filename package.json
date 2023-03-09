@@ -26,9 +26,11 @@
     "vitest": "^0.29.2"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "nodemon": "^2.0.21",
     "pg": "^8.10.0",
     "sequelize": "^6.29.1",

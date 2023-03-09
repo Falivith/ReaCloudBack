@@ -1,4 +1,4 @@
-/* eslint-disable */
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const usersRouter = require('express').Router()
 
@@ -9,14 +9,17 @@ usersRouter.get('/', async (req, res) => {
 
 
   usersRouter.post('/', async (req, res) => {
-    try {
-      console.log(req.body)
-      const user = await User.create(req.body)
-      res.status(201).json(user)
-    } 
-    catch(error) {
-      return res.status(400).json({ error })
-    }
+    
+    const {password} = req.body
+    
+    const saltRounds = 10
+    const passwordHashed = await bcrypt.hash(password,saltRounds)
+
+    const userObject = {...req.body, password : passwordHashed}
+
+    const user = await User.create(userObject)
+    res.status(201).json(user)
   })
+
 
 module.exports = usersRouter

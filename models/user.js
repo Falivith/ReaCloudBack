@@ -43,6 +43,7 @@ User.init({
   modelName: 'user',
 });
 
-User.sync()
+User.sync({ logging: false });
+
 
 module.exports = User
