@@ -1,5 +1,5 @@
 /* eslint-disable */
-const User = require('./models/user');
+const User = require('../models/user');
 const usersRouter = require('express').Router()
 
 usersRouter.get('/', async (req, res) => {
@@ -7,7 +7,7 @@ usersRouter.get('/', async (req, res) => {
     res.json(user);
   });
 
-  app.post('/', async (req, res) => {
+  usersRouter.post('/', async (req, res) => {
     console.log(req.body)
     const User = await User.create(req.body)
     res.json(User)

@@ -1,9 +1,23 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable consistent-return */
-/* eslint-disable no-console */
-const app = require('./app');
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const { PORT } = require('./util/config')
+const { connectToDatabase } = require('./util/db');
+const usersRouter = require('./controllers/users');
 
-const PORT = process.env.PORT || 3003;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+
+
+app.use(cors());
+app.use(express.static('dist'));
+app.use(express.json());
+app.use('/api/users', usersRouter);
+
+const start = async () => {
+  await connectToDatabase()
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
+}
+
+start()

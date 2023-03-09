@@ -1,5 +1,6 @@
 /* eslint-disable */
 const {Model, DataTypes} = require('sequelize');
+const { sequelize } = require('../util/db')
 
 
 // eslint-disable-next-line require-jsdoc
@@ -39,7 +40,7 @@ User.init({
   sequelize,
   underscored: true,
   timestamps: false,
-  modelName: 'note',
+  modelName: 'user',
 });
 
 module.exports = User
