@@ -6,10 +6,8 @@ const { connectToDatabase } = require('./util/db');
 const usersRouter = require('./controllers/users');
 
 
-
-
-app.use(cors());
-app.use(express.static('dist'));
+// app.use(cors());
+// app.use(express.static('dist'));
 app.use(express.json());
 app.use('/api/users', usersRouter);
 
@@ -21,3 +19,5 @@ const start = async () => {
 }
 
 start()
+
+module.export = {app};

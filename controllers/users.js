@@ -4,13 +4,19 @@ const usersRouter = require('express').Router()
 
 usersRouter.get('/', async (req, res) => {
     const user = await User.findAll();
-    res.json(user);
+    res.status(201).json(user);
   });
 
+
   usersRouter.post('/', async (req, res) => {
-    console.log(req.body)
-    const User = await User.create(req.body)
-    res.json(User)
+    try {
+      console.log(req.body)
+      const user = await User.create(req.body)
+      res.json(user)
+    } 
+    catch(error) {
+      return res.status(400).json({ error })
+    }
   })
 
 module.exports = usersRouter

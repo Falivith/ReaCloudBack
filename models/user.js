@@ -31,7 +31,7 @@ User.init({
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  senha: {
+  password: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
@@ -42,5 +42,7 @@ User.init({
   timestamps: false,
   modelName: 'user',
 });
+
+User.sync()
 
 module.exports = User

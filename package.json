@@ -31,6 +31,7 @@
     "express": "^4.18.2",
     "nodemon": "^2.0.21",
     "pg": "^8.10.0",
-    "sequelize": "^6.29.1"
+    "sequelize": "^6.29.1",
+    "supertest": "^6.3.3"
   }
 }
