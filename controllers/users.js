@@ -10,15 +10,14 @@ usersRouter.get('/', async (req, res) => {
 
   usersRouter.post('/', async (req, res) => {
     
-    const {password} = req.body
-    
     const saltRounds = 10
-    const passwordHashed = await bcrypt.hash(password,saltRounds)
+    const passwordHashed = await bcrypt.hash(req.body.password,saltRounds)
 
-    const userObject = {...req.body, password : passwordHashed}
+    const user = await User.create({...req.body, password:passwordHashed })
 
-    const user = await User.create(userObject)
+    // res.status(201).json(user)
     res.status(201).json(user)
+    // res.status(201).send(user.toJSON({ attributes: Object.keys(res.body).filter(key => key != 'password') }))
   })
 
 
