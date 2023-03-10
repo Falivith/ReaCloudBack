@@ -2,10 +2,10 @@ POST http://localhost:3001/api/users
 Content-Type:  application/json
 
 {
-    "nome": "oi",
-    "sobrenome": "tchau",
-    "email": "oi@example.com",
-    "password": "minhasenha427"
+    "nome": "kevin",
+    "sobrenome": "castro",
+    "email": "kevin@castro.com",
+    "password": "427"
 }
 ###
 POST http://localhost:3001/api/login
