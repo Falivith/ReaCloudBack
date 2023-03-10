@@ -24,3 +24,20 @@ test("creates a new user", async () => {
     expect(user.email).toBe("johndoe@example.com");
   });
 
+
+  test("creates user with e-mail that is already stored in database", async () => {
+    const response = await api
+      .post("/api/users")
+      .send({
+        nome: "John Doe",
+        sobrenome: "filantropico",
+        email: "johndoe@example.com",
+        password: "password123",
+      });
+
+    expect(response.status).toBe(400);
+    
+  });
+
+
+

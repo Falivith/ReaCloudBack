@@ -2,12 +2,19 @@ POST http://localhost:3001/api/users
 Content-Type:  application/json
 
 {
-    "nome": "agora altas hash",
-    "sobrenome": "filantropico",
-    "email": "johndoe@example.com",
-    "password": "password123"
+    "nome": "oi",
+    "sobrenome": "tchau",
+    "email": "oi@example.com",
+    "password": "minhasenha427"
+}
+###
+POST http://localhost:3001/api/login
+Content-Type:  application/json
+
+{
+    "email": "oi@example.com",
+    "password": "minhasenha427"
 }
 
 ###
-
 GET http://localhost:3001 HTTP/1.1
