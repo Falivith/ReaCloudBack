@@ -15,9 +15,7 @@ usersRouter.get('/', async (req, res) => {
 
     const user = await User.create({...req.body, password:passwordHashed })
 
-    // res.status(201).json(user)
     res.status(201).json(user)
-    // res.status(201).send(user.toJSON({ attributes: Object.keys(res.body).filter(key => key != 'password') }))
   })
 
 
