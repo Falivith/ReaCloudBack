@@ -11,9 +11,13 @@ usersRouter.get('/', async (req, res) => {
   usersRouter.post('/', async (req, res) => {
     
     const saltRounds = 10
-    const passwordHashed = await bcrypt.hash(req.body.password,saltRounds)
+    console.log('req.body = ', req.body);
+    
+    console.log('password = ', req.body?.values?.password);
+    const passwordHashed = await bcrypt.hash(req.body?.values?.password,saltRounds)
 
-    const user = await User.create({...req.body, password:passwordHashed })
+    
+    const user = await User.create({...req.body.values, password:passwordHashed })
 
     res.status(201).json(user)
   })

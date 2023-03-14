@@ -2,9 +2,9 @@ POST http://localhost:3001/api/users
 Content-Type:  application/json
 
 {
-    "nome": "kevin",
+    "nome": "kevin213",
     "sobrenome": "castro",
-    "email": "kevin@castro.com",
+    "email": "kevin3213@castro.com",
     "password": "427"
 }
 ###
