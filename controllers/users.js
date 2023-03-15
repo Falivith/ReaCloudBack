@@ -26,7 +26,6 @@ usersRouter.get('/', async (req, res) => {
 
 
   usersRouter.get('/:email', async (request, response) => {
-    console.log("cheguei aqui");
     const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'token invalid' })
@@ -35,7 +34,6 @@ usersRouter.get('/', async (req, res) => {
     const email = request.params.email;
     const user = await User.findOne({ where: { email } });
     if (user) {
-      console.log(user);
       response.status(200).json(user)
     } else {
       console.log('User not found');
