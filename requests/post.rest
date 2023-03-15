@@ -15,6 +15,9 @@ Content-Type:  application/json
     "email": "oi@example.com",
     "password": "minhasenha427"
 }
+###
+GET http://localhost:3001/api/users/oi@example.com HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9pQGV4YW1wbGUuY29tIiwiaWQiOjMsImlhdCI6MTY3ODg5NDk2MywiZXhwIjoxNjc4OTEyOTYzfQ.-6lBoSQnI3cT4IQVPyUZHnuPqJ2rrpPltcEivC-lAJc
 
 ###
 GET http://localhost:3001 HTTP/1.1
