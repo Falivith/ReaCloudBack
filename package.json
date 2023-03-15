@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "buildStatic": "cd ../ReaCloudFront; vite build; cp -r dist ../ReaCloudBack"
   },
   "repository": {
     "type": "git",
