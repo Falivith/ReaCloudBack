@@ -8,6 +8,16 @@ Content-Type:  application/json
     "password": "427"
 }
 ###
+POST http://localhost:3001/api/login/googleAuth
+Content-Type:  application/json
+
+{
+    "nome": "kevin213",
+    "sobrenome": "castro",
+    "email": "oi211@example.com",
+    "password": "427"
+}
+###
 POST http://localhost:3001/api/login
 Content-Type:  application/json
 

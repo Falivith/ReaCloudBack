@@ -24,7 +24,6 @@ usersRouter.get('/', async (req, res) => {
     res.status(201).json(user)
   })
 
-
   usersRouter.get('/:email', async (request, response) => {
     const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
     if (!decodedToken.id) {
@@ -37,14 +36,7 @@ usersRouter.get('/', async (req, res) => {
       response.status(200).json(user)
     } else {
       console.log('User not found');
-    }
-
-
-  
+    } 
 })
-
-
-
-
 
 module.exports = usersRouter

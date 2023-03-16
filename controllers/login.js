@@ -40,5 +40,23 @@ loginRouter.post('/', async(request,response)=> {
         .send({ token, nome: user.nome, email: user.email })
 })
 
+
+loginRouter.post('/googleAuth', async (req, res) => {
+    
+  console.log('req.body googleAuth = ', req.body);
+  const info = jwt_decode(req.body)
+  const email = info.body.email
+
+  const user = await User.findOne({ where: { email } });
+  if (user) {
+    res.status(200).json(user)
+  } else {
+    const user = await User.create(req.body)
+    res.status(201).send(user.toJSON())
+  }
+})
+
+
+
 module.exports = loginRouter
 
