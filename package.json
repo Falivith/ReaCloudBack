@@ -21,9 +21,6 @@
   },
   "homepage": "https://github.com/Falivith/ReaCloudBack#readme",
   "devDependencies": {
-    "eslint": "^8.35.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-react": "^7.32.2",
     "vitest": "^0.29.2"
   },
   "dependencies": {
