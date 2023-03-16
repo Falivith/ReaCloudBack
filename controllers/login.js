@@ -42,9 +42,8 @@ loginRouter.post('/', async(request,response)=> {
 
 
 loginRouter.post('/googleAuth', async (req, res) => {
-    
   console.log('req.body googleAuth = ', req.body);
-  const info = jwt_decode(req.body)
+  const info = jwt.jwt_decode(req.body)
   const email = info.body.email
 
   const user = await User.findOne({ where: { email } });

@@ -14,12 +14,16 @@ usersRouter.get('/', async (req, res) => {
     
     const saltRounds = 10
     console.log('req.body = ', req.body);
+    // const passwordHashed = await bcrypt.hash(req.body?.values?.password,saltRounds)
+    // const user = await User.create({...req.body.values, password:passwordHashed })
     
-    console.log('password = ', req.body?.values?.password);
-    const passwordHashed = await bcrypt.hash(req.body?.values?.password,saltRounds)
-
     
-    const user = await User.create({...req.body.values, password:passwordHashed })
+    const existingUser = await User.findOne({ where: { email: req.body.email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
+    const passwordHashed = await bcrypt.hash(req.body.password,saltRounds)
+    const user = await User.create({...req.body, password:passwordHashed })
 
     res.status(201).json(user)
   })
