@@ -14,9 +14,6 @@ usersRouter.get('/', async (req, res) => {
     
     const saltRounds = 10
     console.log('req.body = ', req.body);
-    // const passwordHashed = await bcrypt.hash(req.body?.values?.password,saltRounds)
-    // const user = await User.create({...req.body.values, password:passwordHashed })
-    
     
     const existingUser = await User.findOne({ where: { email: req.body.email } });
     if (existingUser) {
@@ -24,12 +21,11 @@ usersRouter.get('/', async (req, res) => {
     }
     const passwordHashed = await bcrypt.hash(req.body.password,saltRounds)
     const user = await User.create({...req.body, password:passwordHashed })
-
     res.status(201).json(user)
   })
 
   usersRouter.get('/:email', async (request, response) => {
-    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'token invalid' })
     }
@@ -40,6 +36,7 @@ usersRouter.get('/', async (req, res) => {
       response.status(200).json(user)
     } else {
       console.log('User not found');
+      return response.status(404).json({ error: 'User not found' });
     } 
 })
 
