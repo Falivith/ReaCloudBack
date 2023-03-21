@@ -26,7 +26,6 @@ usersRouter.get('/', async (req, res) => {
 
   usersRouter.get('/:email', async (request, response) => {
     
-    
     const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
     if (!decodedToken) {
       return response.status(401).json({ error: 'token invalid' })
@@ -36,6 +35,27 @@ usersRouter.get('/', async (req, res) => {
     const user = await User.findOne({ where: { email } });
     if (user) {
       response.status(200).json(user)
+    } else {
+      console.log('User not found');
+      return response.status(404).json({ error: 'User not found' });
+    } 
+})
+  
+
+usersRouter.put('/:email', async (request, response) => {
+    
+    const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
+    if (!decodedToken) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
+    
+    const email = request.params.email;
+    const user = await User.findOne({ where: { email } });
+    if (user) {
+     
+      const updatedUser = await user.update(request.body);
+      response.status(200).json(updatedUser)
+
     } else {
       console.log('User not found');
       return response.status(404).json({ error: 'User not found' });
