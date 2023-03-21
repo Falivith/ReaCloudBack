@@ -8,7 +8,8 @@ Content-Type:  application/json
     "password": "427"
 }
 ###
-POST http://localhost:3001/api/login/googleAuth
+
+POST http://localhost:3001/api/googleLogin
 Content-Type:  application/json
 
 {

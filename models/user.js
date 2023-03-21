@@ -34,7 +34,7 @@ User.init({
   },
   password: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: true,
   },
 
 }, {
@@ -46,7 +46,11 @@ User.init({
 
 User.prototype.toJSON = function () {
   const values = Object.assign({}, this.get());
-
+  for (const key in values) {
+    if (values[key] === null) {
+      values[key] = "";
+    }
+  }
   delete values.password;
 
   return values;

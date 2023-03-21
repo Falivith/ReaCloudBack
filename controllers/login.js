@@ -8,9 +8,10 @@ const getTokenFrom = require('../util/authentication')
 
 loginRouter.post('/checkToken', async(req, res) => {
   
-  console.log('getTokenFrom(req) = ', getTokenFrom(req));
+  
   const decodedToken = await jwt.verify(getTokenFrom(req), process.env.SECRET)
-    if (!decodedToken.id) {
+
+  if (!decodedToken) {
       return res.status(401).json(false)
     }
     else{
@@ -53,22 +54,6 @@ loginRouter.post('/', async(request,response)=> {
         .status(200)
         .send({ token, nome: user.nome, email: user.email })
 })
-
-
-// loginRouter.post('/googleAuth', async (req, res) => {
-//   console.log('req.body googleAuth = ', req.body);
-//   const info = jwt.jwt_decode(req.body)
-//   const email = info.body.email
-
-//   const user = await User.findOne({ where: { email } });
-//   if (user) {
-//     res.status(200).json(user)
-//   } else {
-//     const user = await User.create(req.body)
-//     res.status(201).send(user.toJSON())
-//   }
-// })
-
 
 
 module.exports = loginRouter
