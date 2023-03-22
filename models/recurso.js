@@ -1,5 +1,5 @@
 /* eslint-disable */
-const {Model, DataTypes} = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const { sequelize } = require('../util/db')
 
 
@@ -11,11 +11,11 @@ Recurso.init({
     primaryKey: true,
     autoIncrement: true,
   },
-  titulo_material: {
+  title: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  tipo_material: {
+  reatype: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -23,35 +23,35 @@ Recurso.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-  publico_alvo: {
+  targetPublic: {
     type: DataTypes.ENUM,
     values: ['Séries Iniciais', 'Fundamental', 'Médio', 'Superior'],
     allowNull: false,
   },
-  imagem_material: {
+  thumb: {
     type: DataTypes.BLOB,
     allowNull: false,
   },
-  area_conhecimento: {
+  knowledgeArea: {
     type: DataTypes.ENUM,
     values: ['Português', 'Matemática', 'Biologia', 'Teologia'],
     allowNull: false,
   },
-  tipo_licensa: {
+  license: {
     type: DataTypes.ENUM,
     values: ['Domínio Público', 'GNU'],
     allowNull: false,
   },
-  idioma_material: {
+  language: {
     type: DataTypes.ENUM,
     values: ['Português', 'Inglês', 'Francês', 'Alemão', 'Outro'],
     allowNull: false,
   },
-  descricao: {
+  description: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  intrucoes_uso: {
+  instructions: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
@@ -63,13 +63,13 @@ Recurso.init({
   modelName: 'recurso',
 });
 
-User.prototype.toJSON = function () {
+Recurso.prototype.toJSON = function () {
   const values = Object.assign({}, this.get());
 
   return values;
 };
 
-User.sync({ logging: false });
+Recurso.sync({ logging: false });
 
 
 module.exports = Recurso
