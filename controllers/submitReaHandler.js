@@ -24,7 +24,7 @@ recursoRouter.post('/', async (request, response) => {
     if (!decodedToken) {
         return response.status(401).json({ error: 'token invalid' })
     }
-    const recurso = await Recurso.create({...request.body, email: decodedToken.username})
+    const recurso = await Recurso.create({...request.body, user_id: decodedToken.id})
     if (recurso){
         response.status(201).json(recurso)
     }

@@ -12,13 +12,12 @@ Recurso.init({
     primaryKey: true,
     autoIncrement: true,
   },
-  email:{
-    type: DataTypes.STRING,
+  user_id:{
+    type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true,
     references: {
       model: User,
-      key: 'email',
+      key: 'id',
     },
   }
   ,
@@ -75,14 +74,12 @@ Recurso.init({
 });
 
 
-Recurso.belongsTo(User, { foreignKey: 'email', targetKey: 'email' });
+Recurso.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
 
 Recurso.prototype.toJSON = function () {
   const values = Object.assign({}, this.get());
-
   return values;
 };
-
 
 
 Recurso.sync({ logging: false });
