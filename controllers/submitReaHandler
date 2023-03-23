@@ -17,13 +17,14 @@ recursoRouter.get('/', async (request, response) => {
 })
 
 
-recursoRouter.post('/recurso', async (request, response) => {
+recursoRouter.post('/', async (request, response) => {
     
     const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
+    console.log(decodedToken)
     if (!decodedToken) {
         return response.status(401).json({ error: 'token invalid' })
     }
-    const recurso = await Recurso.create(request.body)
+    const recurso = await Recurso.create({...request.body, email: decodedToken.username})
     if (recurso){
         response.status(201).json(recurso)
     }
