@@ -1,6 +1,7 @@
 /* eslint-disable */
 const { Model, DataTypes } = require('sequelize');
-const { sequelize } = require('../util/db')
+const { sequelize } = require('../util/db');
+const User = require('./user');
 
 
 // eslint-disable-next-line require-jsdoc
@@ -11,49 +12,59 @@ Recurso.init({
     primaryKey: true,
     autoIncrement: true,
   },
+  email:{
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    references: {
+      model: User,
+      key: 'email',
+    },
+  }
+  ,
   title: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   reatype: {
     type: DataTypes.STRING,
-    allowNull: false,
+    
   },
   link: {
     type: DataTypes.STRING,
-    allowNull: false,
+    
   },
   targetPublic: {
     type: DataTypes.ENUM,
     values: ['Séries Iniciais', 'Fundamental', 'Médio', 'Superior'],
-    allowNull: false,
+    
   },
   thumb: {
     type: DataTypes.BLOB,
-    allowNull: false,
+    
   },
   knowledgeArea: {
     type: DataTypes.ENUM,
     values: ['Português', 'Matemática', 'Biologia', 'Teologia'],
-    allowNull: false,
+    
   },
   license: {
     type: DataTypes.ENUM,
     values: ['Domínio Público', 'GNU'],
-    allowNull: false,
+    
   },
   language: {
     type: DataTypes.ENUM,
     values: ['Português', 'Inglês', 'Francês', 'Alemão', 'Outro'],
-    allowNull: false,
+    
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    
   },
   instructions: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    
   },
 
 }, {
@@ -63,11 +74,16 @@ Recurso.init({
   modelName: 'recurso',
 });
 
+
+Recurso.belongsTo(User, { foreignKey: 'email', targetKey: 'email' });
+
 Recurso.prototype.toJSON = function () {
   const values = Object.assign({}, this.get());
 
   return values;
 };
+
+
 
 Recurso.sync({ logging: false });
 
