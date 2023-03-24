@@ -11,6 +11,12 @@ User.init({
     primaryKey: true,
     autoIncrement: true,
   },
+  profilePicture: {
+    type: DataTypes.BLOB, 
+  },
+  mimeType: {
+    type: DataTypes.STRING,
+  },
   nome: {
     type: DataTypes.TEXT,
     allowNull: false,
