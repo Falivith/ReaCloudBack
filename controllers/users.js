@@ -29,7 +29,7 @@ usersRouter.post('/uploadPhoto',upload.single('file'),async (request, response) 
   console.log('request.file = ', request.file);
   const imageFile = fs.readFileSync(request.file.path); // read uploaded file from temporary directory
   const buffer = Buffer.from(imageFile); // convert file data to buffer
-
+  console.log('decodedToken', decodedToken);
 
   const user = await User.findOne({ where: { email: decodedToken.email } });
 if (user) {
@@ -66,6 +66,7 @@ usersRouter.get('/uploadPhoto', async (request, response) => {
     if (!decodedToken) {
       return response.status(401).json({ error: 'token invalid' })
     }
+    console.log('decodedToken aaaaaaaa', decodedToken);
     const user = await User.findOne({ where: { email: decodedToken.email } });
     
     
