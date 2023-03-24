@@ -14,9 +14,6 @@ User.init({
   profilePicture: {
     type: DataTypes.BLOB, 
   },
-  mimeType: {
-    type: DataTypes.STRING,
-  },
   nome: {
     type: DataTypes.TEXT,
     allowNull: false,

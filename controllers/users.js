@@ -34,8 +34,7 @@ usersRouter.post('/uploadPhoto',upload.single('file'),async (request, response) 
   const user = await User.findOne({ where: { email: decodedToken.email } });
 if (user) {
   const updatedUser = await user.update({
-    profilePicture: buffer,
-    mimeType: request.file.mimetype,
+    profilePicture: buffer
   }, { returning: true });
 
   fs.unlink(request.file.path, (err) => {
@@ -54,26 +53,18 @@ if (user) {
 
 
 
-
-
-
-
-
-
 usersRouter.get('/uploadPhoto', async (request, response) => {
     
     const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
     if (!decodedToken) {
       return response.status(401).json({ error: 'token invalid' })
     }
-    console.log('decodedToken aaaaaaaa', decodedToken);
     const user = await User.findOne({ where: { email: decodedToken.email } });
     
     
     if (user.profilePicture) {
-      response.set('Content-Type', user.mimeType);
       response.set('Content-Disposition', 'inline');
-      response.json({data: user.profilePicture, type:user.mimeType})
+      response.json({data: user.profilePicture})
 
     } else {
       console.log('picture not found');
