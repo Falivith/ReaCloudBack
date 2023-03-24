@@ -31,18 +31,25 @@ usersRouter.post('/uploadPhoto',upload.single('file'),async (request, response) 
   const buffer = Buffer.from(imageFile); // convert file data to buffer
 
 
-  const user = await User.findOne({ where: { email:decodedToken.email } });
-  if (user) {
-    const updatedUser = await user.update(
-      {profilePicture: buffer,
-       mimeType: request.file.mimetype,
-      })
-    
-    response.status(200).json(updatedUser)
-  } else {
-    console.log('User not found');
-    return response.status(404).json({ error: 'User not found' });
-  } 
+  const user = await User.findOne({ where: { email: decodedToken.email } });
+if (user) {
+  const updatedUser = await user.update({
+    profilePicture: buffer,
+    mimeType: request.file.mimetype,
+  }, { returning: true });
+
+  fs.unlink(request.file.path, (err) => {
+    if (err) {
+      console.error(err);
+      return response.status(500).json({ error: 'Error deleting file' });
+    }
+
+    response.status(200).json(updatedUser);
+  });
+} else {
+  console.log('User not found');
+  return response.status(404).json({ error: 'User not found' });
+} 
 })
 
 
