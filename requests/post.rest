@@ -1,3 +1,4 @@
+###
 POST http://localhost:3001/api/users
 Content-Type:  application/json
 
@@ -30,10 +31,19 @@ Content-Type:  application/json
 
 POST http://localhost:3001/api/recurso
 Content-Type:  application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtldmluMzExMjEzQGNhc3Ryby5jb20iLCJpZCI6MywiaWF0IjoxNjc5NjA1NzY4LCJleHAiOjE2Nzk2MjM3Njh9.wSfIujMcv0lricK-SUU09lpmuB3TbEYX8FLnicHIJjQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtldmluMzExMjEzQGNhc3Ryby5jb20iLCJpZCI6NSwiaWF0IjoxNjc5OTYxOTUyLCJleHAiOjE2Nzk5Nzk5NTJ9.taodRSLxCuvDePyUFdfUYVWGsUKUvlrxDLY4pKtHpi8
 
 {
-    "title": "teste"
+  "title": "Recurso3",
+  "reatype": "Ferramenta",
+  "link": "https://pt.symbolab.com/",
+  "targetPublic": "Médio",
+  "thumb": "https://www.shutterstock.com/image-vector/man-icon-vector-260nw-1040084344.jpg",
+  "knowledgeArea": "Matemática",
+  "license": "Domínio Público",
+  "language": "Português",
+  "description": " is simply dummy text of the printing and types",
+  "instructions": "Abra, insira equação veja resposta."
 }
 
 
@@ -43,3 +53,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9pQ
 
 ###
 GET http://localhost:3001/api/users/teste HTTP/1.1
+
+###
+GET http://localhost:3001/api/recurso HTTP/1.1

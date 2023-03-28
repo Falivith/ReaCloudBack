@@ -35,8 +35,7 @@ Recurso.init({
   },
   targetPublic: {
     type: DataTypes.ENUM,
-    values: ['Séries Iniciais', 'Fundamental', 'Médio', 'Superior'],
-    
+    values: ['Todos', 'Séries Iniciais', 'Fundamental', 'Médio', 'Superior'],
   },
   thumb: {
     type: DataTypes.BLOB,
