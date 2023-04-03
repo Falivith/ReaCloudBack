@@ -1,13 +1,14 @@
 const jwt = require('jsonwebtoken')
 const Recurso = require('../models/recurso');
 const getTokenFrom = require('../util/authentication');
-const recursoRouter = require('express').Router()
-// recursoRouter.get()
+
+const express = require('express)');
+const recursoRouter = require('express').Router();
 
 recursoRouter.get('/', async (req, res) => {
     const reas = await Recurso.findAll();
     res.status(201).json(reas);
-  });
+});
 
 recursoRouter.post('/', async (request, response) => {
     
@@ -28,5 +29,3 @@ recursoRouter.post('/', async (request, response) => {
 })
 
 module.exports = recursoRouter
-
-
