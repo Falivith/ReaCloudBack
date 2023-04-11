@@ -11,9 +11,10 @@ recursoRouter.get('/', async (req, res) => {
 });
 
 recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) => {
+    
 
-    // Validação Usuário
     const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
+    console.log('decodedToken = ', decodedToken);
     console.log(decodedToken)
     if (!decodedToken) {
         return response.status(401).json({ error: 'token invalid' })
@@ -22,27 +23,35 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) =
     if(request.body){
 
         const recurso = await Recurso.create({...request.body, user_id: decodedToken.id})
-
-        const imageFile = fs.readFileSync(request.file.path); // read uploaded file from temporary directory
-        const buffer = Buffer.from(imageFile); // convert file data to buffer
-
-        const recursoPronto = await recurso.update({
-            thumb: buffer
-            }, { returning: true });
-      
-        fs.unlink(request.file.path, (err) => {
-          if (err) {
-            console.error(err);
-            return response.status(500).json({ error: 'Error deleting file' });
-          }
-        });
         
-        if (recursoPronto){
-            response.status(201).json(recursoPronto);
+        console.log('request = ', request);
+
+        if (request.file){
+            const imageFile = fs.readFileSync(request.file.path); // read uploaded file from temporary directory
+
+            const buffer = Buffer.from(imageFile); // convert file data to buffer
+
+            const recursoPronto = await recurso.update({
+                // thumb: buffer
+                }, { returning: true });
+        
+            fs.unlink(request.file.path, (err) => {
+            if (err) {
+                console.error(err);
+                return response.status(500).json({ error: 'Error deleting file' });
+            }
+        });
+        }
+
+
+        
+        
+        if (recurso){
+            response.status(201).json(recurso);
             console.log("Recurso cadastrado com sucesso.");
         }
         else{
-            response.status(400).json(recursoPronto);
+            response.status(400).json(recurso);
             console.log("Falha ao cadastrar recurso. (Database access failed)");
         }
     }
