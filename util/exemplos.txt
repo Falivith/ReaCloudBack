@@ -1,0 +1,33 @@
+  
+  "title": "Symbolab",
+  "reatype": "Ferramenta",
+  "link": "https://pt.symbolab.com/",
+  "targetPublic": "Médio",
+  "thumb": "https://www.picserver.org/assets/library/2020-10-31/originals/example1.jpg",
+  "knowledgeArea": "Matemática",
+  "license": "Domínio Público",
+  "language": "Português",
+  "description": "Symbolab é um mecanismo de resposta que fornece soluções passo a passo para problemas matemáticos em uma variedade de assuntos. Foi originalmente desenvolvido pela empresa iniciante israelense EqsQuest Ltd.",
+  "instructions": "Abra, insira equação veja resposta."
+
+  "title": "Wolfram",
+  "reatype": "Ferramenta",
+  "link": "https://pt.symbolab.com/",
+  "targetPublic": "Médio",
+  "thumb": "https://www.picserver.org/assets/library/2020-10-31/originals/example1.jpg",
+  "knowledgeArea": "Matemática",
+  "license": "Domínio Público",
+  "language": "Português",
+  "description": "Symbolab é um mecanismo de resposta que fornece soluções passo a passo para problemas matemáticos em uma variedade de assuntos. Foi originalmente desenvolvido pela empresa iniciante israelense EqsQuest Ltd.",
+  "instructions": "Abra, insira equação veja resposta."
+
+  "title": "Wolfram",
+  "reatype": "Ferramenta",
+  "link": "https://pt.symbolab.com/",
+  "targetPublic": "Médio",
+  "thumb": "https://www.picserver.org/assets/library/2020-10-31/originals/example1.jpg",
+  "knowledgeArea": "Matemática",
+  "license": "Domínio Público",
+  "language": "Português",
+  "description": "Symbolab é um mecanismo de resposta que fornece soluções passo a passo para problemas matemáticos em uma variedade de assuntos. Foi originalmente desenvolvido pela empresa iniciante israelense EqsQuest Ltd.",
+  "instructions": "Abra, insira equação veja resposta."

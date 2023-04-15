@@ -25,7 +25,7 @@ Recurso.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-  reatype: {
+  reaType: {
     type: DataTypes.STRING,
     
   },
@@ -35,8 +35,7 @@ Recurso.init({
   },
   targetPublic: {
     type: DataTypes.ENUM,
-    values: ['Séries Iniciais', 'Fundamental', 'Médio', 'Superior'],
-    
+    values: ['Todos', 'Séries Iniciais', 'Fundamental', 'Médio', 'Superior'],
   },
   thumb: {
     type: DataTypes.BLOB,
