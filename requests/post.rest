@@ -31,7 +31,7 @@ Content-Type:  application/json
 
 POST http://localhost:3001/api/recurso
 Content-Type:  application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtldmluMzExMjEzQGNhc3Ryby5jb20iLCJpZCI6NSwiaWF0IjoxNjc5OTYxOTUyLCJleHAiOjE2Nzk5Nzk5NTJ9.taodRSLxCuvDePyUFdfUYVWGsUKUvlrxDLY4pKtHpi8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtldmluMzExMjEzQGNhc3Ryby5jb20iLCJpZCI6NSwiaWF0IjoxNjgxNTkwNDkxLCJleHAiOjE2ODE2MDg0OTF9.67wGoH0W82JPams9FVDSXZnplbdylwLzBHtrZsbva-Q
 
 {
   "title": "Recurso3",

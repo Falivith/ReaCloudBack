@@ -12,12 +12,13 @@ recursoRouter.get('/', async (req, res) => {
 
 recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) => {
     
-
     const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
-    console.log('decodedToken = ', decodedToken);
-    console.log(decodedToken)
+
+    // console.log('decodedToken = ', decodedToken);
+    // console.log(decodedToken)
+
     if (!decodedToken) {
-        return response.status(401).json({ error: 'token invalid' })
+        return response.status(401).json({ error: 'Token inválido.' })
     }
 
     if(request.body){
@@ -42,9 +43,6 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) =
             }
         });
         }
-
-
-        
         
         if (recurso){
             response.status(201).json(recurso);
