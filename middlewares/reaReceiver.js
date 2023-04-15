@@ -14,10 +14,8 @@ module.exports = (multer({
         (acceptedFormat => acceptedFormat == file.mimetype);
 
        if(extensaoImg){
-        console.log("TRUE!")
         return cb(null, true);
        }
-       console.log("FALSE!")
        return cb(null, false);
     }
 }))

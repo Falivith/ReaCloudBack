@@ -16,15 +16,18 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) =
     const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
     console.log(decodedToken)
     if (!decodedToken) {
-        return response.status(401).json({ error: 'Token inválido.' })
+        return response.status(401).json({ error: 'token invalid' })
     }
 
+    console.log(request.body)
     if(request.body){
-
-        const recurso = await Recurso.create({...request.body, user_id: decodedToken.id})
 
         const imageFile = fs.readFileSync(request.file.path); // read uploaded file from temporary directory
         const buffer = Buffer.from(imageFile); // convert file data to buffer
+
+        console.log(request.body)
+
+        const recurso = await Recurso.create({...request.body, user_id: decodedToken.id})
 
         const recursoPronto = await recurso.update({
             thumb: buffer

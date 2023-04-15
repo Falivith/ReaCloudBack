@@ -25,7 +25,7 @@ Recurso.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-  reatype: {
+  reaType: {
     type: DataTypes.STRING,
     
   },
