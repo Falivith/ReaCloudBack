@@ -125,7 +125,10 @@ usersRouter.put('/:email', async (request, response) => {
   const user = await User.findOne({ where: { email } });
   if (user) {
 
-    const updatedUser = await user.update(request.body);
+    console.log('request.body = ', request.body);
+    const {profilePicture,...data} = request.body
+    
+    const updatedUser = await user.update(data);
     response.status(200).json(updatedUser)
 
   } else {
