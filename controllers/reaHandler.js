@@ -6,7 +6,9 @@ const recursoRouter = require('express').Router();
 const reaReceiver = require('../middlewares/reaReceiver')
 
 recursoRouter.get('/', async (req, res) => {
-    const reas = await Recurso.findAll();
+    const reas = await Recurso.findAll({
+        logging: false // Desativar o Log da consulta
+    }) 
     res.status(201).json(reas);
 });
 
