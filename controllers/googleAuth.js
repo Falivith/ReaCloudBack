@@ -4,9 +4,7 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 const authRouter = require('express').Router()
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-
-
-
+const axios = require('axios');
 
 async function verifyGoogleToken(token) {
     try {
@@ -22,10 +20,6 @@ async function verifyGoogleToken(token) {
 
 
   authRouter.post("/googleLogin", async (req, res) => {
-    
- 
-
-
     try {
       // console.log({ verified: verifyGoogleToken(req.body.credential) });
       if (req.body.credential) {
@@ -37,12 +31,16 @@ async function verifyGoogleToken(token) {
           });
         }
         const profile = verificationResponse?.payload;
+        const response = await axios.get(profile.picture, { responseType: 'arraybuffer' });
+        const buffer = Buffer.from(response.data, );
+        
         
         const [user, created] = await User.findOrCreate({
           where: { email: profile.email },
           defaults: {
             nome: profile.given_name,
             sobrenome: profile.family_name,
+            profilePicture: buffer,
           }
         });
 
