@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const Recurso = require('../models/recurso');
 const fs = require('fs');
-const getTokenFrom = require('../util/authentication');
+const util = require('../util/authentication');
 const recursoRouter = require('express').Router();
 const reaReceiver = require('../middlewares/reaReceiver')
 
@@ -15,11 +15,7 @@ recursoRouter.get('/', async (req, res) => {
 recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) => {
 
     // Validação Usuário
-    const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
-    console.log(decodedToken)
-    if (!decodedToken) {
-        return response.status(401).json({ error: 'token invalid' })
-    }
+    const decodedToken = await util.checkToken(request)
 
     console.log(request.body)
     if(request.body){
@@ -28,7 +24,7 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) =
         const buffer = Buffer.from(imageFile); // convert file data to buffer
 
         console.log(request.body)
-        console.log('decodedToken = ', decodedToken);
+
         const recurso = await Recurso.create({...request.body, user_id: decodedToken.id})
 
         const recursoPronto = await recurso.update({
