@@ -28,7 +28,7 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) =
         const buffer = Buffer.from(imageFile); // convert file data to buffer
 
         console.log(request.body)
-
+        console.log('decodedToken = ', decodedToken);
         const recurso = await Recurso.create({...request.body, user_id: decodedToken.id})
 
         const recursoPronto = await recurso.update({

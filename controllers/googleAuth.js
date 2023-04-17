@@ -54,7 +54,7 @@ async function verifyGoogleToken(token) {
             lastName: profile?.family_name,
             picture: profile?.picture,
             email: profile?.email,
-            token:  jwt.sign({ email: profile?.email }, process.env.SECRET, {
+            token:  jwt.sign({ email: profile?.email, id: user.id }, process.env.SECRET, {
               expiresIn: "1d",
             }),
           },
