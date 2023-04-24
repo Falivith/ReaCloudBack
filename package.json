@@ -7,7 +7,8 @@
     "test": "vitest",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "buildStatic": "cd ../ReaCloudFront; vite build; cp -r dist ../ReaCloudBack"
+    "buildStatic": "cd ../ReaCloudFront; vite build; cp -r dist ../ReaCloudBack",
+    "buildWindows": "cd .. && cd ReaCloudFront && npm run build && cd ..\\ReaCloudBack && cd ..\\ReaCloudFront && xcopy /E /I /Y dist ..\\ReaCloudBack\\dist"
   },
   "repository": {
     "type": "git",
