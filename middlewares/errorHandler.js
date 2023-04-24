@@ -2,11 +2,14 @@ const jwt = require('jsonwebtoken')
 
 
 function errorHandler(err, req, res, next) {
-    if (err instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ error: 'Invalid token' });
+  if (err instanceof jwt.JsonWebTokenError) {
+    if (err instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ error: 'Token expired' });
     }
-  
-    next(err);
+    return res.status(401).json({ error: 'Invalid token' });
   }
+
+  next(err);
+}
   
   module.exports = errorHandler;
