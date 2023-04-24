@@ -9,8 +9,12 @@ const util = require('../util/authentication')
 loginRouter.post('/checkToken', async(req, res) => {
   
   
-  util.checkToken(req)
+  const decodedToken = util.checkToken(req,res)
+  
+  
   res.status(200).json(true);
+  
+  
     
 });
 

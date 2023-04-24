@@ -54,9 +54,11 @@ usersRouter.get('/uploadPhoto', async (request, response) => {
     
   const decodedToken = await util.checkToken(request)
 
-    const user = await User.findOne({ where: { email: decodedToken.email } });
+  console.log('decodedToken = ', decodedToken);
+  const user = await User.findByPk(decodedToken.id);
+
     
-    
+  console.log('user = ', user);
     if (user.profilePicture) {
       response.set('Content-Disposition', 'inline');
       response.json({data: user.profilePicture})
@@ -92,29 +94,33 @@ usersRouter.get('/', async (req, res) => {
   })
 
 
-  // usersRouter.put('/dados', async (request, response) => {
-  //   util.checkToken(request)
-    
-  //   const {password} = request.body
+  usersRouter.put('/dados', async (request, response) => {
+    const decodedToken = await util.checkToken(request)
+    const {password,newPassword} = request.body
+    const user = await User.findByPk(decodedToken.id);
+    const passwordCorrect = user === null
+    ? false
+    : await bcrypt.compare(password, user.password)
 
-  //   const user = await User.findOne({where: {email}})
-
-  //   const passwordCorrect = user === null
-  //   ? false
-  //   : await bcrypt.compare(password, user.password)
-
-  //   if (!(user && passwordCorrect)) {
-  //       return response.status(401).json({
-  //         error: 'invalid username or password'
-  //       })
-  //     }
+    if (!(user && passwordCorrect)) {
+        return response.status(401).json({
+          error: 'invalid username or password'
+        })
+      }
+    else{
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+      response.send('Password updated successfully');
+    }
   
-  // })
+  })
 
 
   usersRouter.get('/:email', async (request, response) => {
     
    const decodedToken = await util.checkToken(request)
+   console.log('decodedToken', decodedToken);
     
     const user = await User.findByPk(decodedToken.id);
     if (user) {
