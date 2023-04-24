@@ -37,6 +37,7 @@
     "nodemon": "^2.0.21",
     "pg": "^8.10.0",
     "sequelize": "^6.29.1",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "vercel": "^28.20.0"
   }
 }
