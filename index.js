@@ -11,5 +11,3 @@ const start = async () => {
 }
 
 start()
-
-
