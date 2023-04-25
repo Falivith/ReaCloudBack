@@ -43,4 +43,5 @@ const handleGoogle = async (response) => {
       .catch((error) => {
         setError(error?.message);
       });
-  };
+  }
+  
