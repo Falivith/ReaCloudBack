@@ -1,19 +1,10 @@
 {
-"version": 2,
-"builds": [
-    {
-    "src": "package.json",
-    "use": "@vercel/node"
-    },
-    {
-    "src": "/**",
-    "use": "@vercel/static"
-    }
-],
-"routes": [
-    {
-    "src": "/(.*)",
-    "dest": "/index.js"
-    }
+    "version": 2,
+    "name": "nodejs-express",
+    "builds": [
+        { "src": "index.js", "use": "@now/node" }
+    ],
+    "routes": [
+        { "src": "/(.*)", "dest": "index.js" }
     ]
 }
