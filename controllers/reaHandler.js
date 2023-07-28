@@ -53,3 +53,16 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) =
 })
 
 module.exports = recursoRouter
+
+// ReaDetails
+
+recursoRouter.get('/:id', (req, res) => {
+    const resourceId = req.params.id;
+    console.log(reqs)
+    // Use o ID para buscar os dados do recurso no seu sistema
+    // ...
+    // Aqui você pode realizar uma consulta no banco de dados, chamar uma função assíncrona, etc.
+    // ...
+    // Depois de obter os dados do recurso, envie-os como resposta
+    res.json(resourceData);
+  });
