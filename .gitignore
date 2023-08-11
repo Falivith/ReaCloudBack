@@ -24,3 +24,5 @@ dist-ssr
 
 
 ReaCloud.code-workspace
+.env
+.env
