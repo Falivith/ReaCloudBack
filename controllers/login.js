@@ -7,15 +7,8 @@ const util = require('../util/authentication')
 
 
 loginRouter.post('/checkToken', async(req, res) => {
-  
-  
   const decodedToken = util.checkToken(req,res)
-  
-  
-  res.status(200).json(true);
-  
-  
-    
+  res.status(200).json(true);   
 });
 
 
