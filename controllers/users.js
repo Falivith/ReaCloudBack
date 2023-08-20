@@ -5,6 +5,7 @@ const util = require('../util/authentication');
 const usersRouter = require('express').Router()
 const multer = require('multer');
 const fs = require('fs');
+const { log } = require('console');
 
 
 // set up Multer storage
@@ -135,14 +136,21 @@ usersRouter.get('/', async (req, res) => {
 usersRouter.put('/:email', async (request, response) => {
 
   const decodedToken = await util.checkToken(request)
-
+  
 
   const user = await User.findByPk(decodedToken.id);
+  console.log("user = ", user);
   if (user) {
 
     console.log('request.body = ', request.body);
     const {profilePicture,...data} = request.body
     
+    
+    if (data.nome.length ===0){
+      console.log("cheguei aqui");
+      return response.status(400).json({ error: 'nome sobrando' });  
+    }
+
     const updatedUser = await user.update(data);
     response.status(200).json(updatedUser)
 
