@@ -4,6 +4,41 @@ const fs = require('fs');
 const util = require('../util/authentication');
 const recursoRouter = require('express').Router();
 const reaReceiver = require('../middlewares/reaReceiver')
+const { Op } = require('sequelize');
+
+recursoRouter.get('/filter', async (req, res) => {
+    let { title, knowledge_area, rea_type } = req.query;
+
+    console.log("filtro titulo blablabla .... ", title, knowledge_area, rea_type)
+
+    const filters = {
+        title: {
+            [Op.like]: `${title}%`,
+        },
+    };
+
+    if (knowledge_area !== undefined) {
+        filters.knowledge_area = knowledge_area;
+    }
+
+    if (rea_type !== undefined) {
+        filters.rea_type = rea_type;
+    }
+
+    try {
+        const recursos = await Recurso.findAll({
+            where: filters
+        });
+        // 'recursos' is an array of Recurso instances that match the query parameters.
+        res.json(recursos);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while retrieving resources.' });
+    }
+});
+
+
+
 
 recursoRouter.get('/', async (req, res) => {
     const reas = await Recurso.findAll({
@@ -11,6 +46,11 @@ recursoRouter.get('/', async (req, res) => {
     }) 
     res.status(201).json(reas);
 });
+
+
+
+
+
 
 recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) => {
 
