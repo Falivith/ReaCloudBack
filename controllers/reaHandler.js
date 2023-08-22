@@ -7,9 +7,12 @@ const reaReceiver = require('../middlewares/reaReceiver')
 const { Op } = require('sequelize');
 
 recursoRouter.get('/filter', async (req, res) => {
-    let { title } = req.query;
+    let { title, currentPage = 1, pageSize = 10 } = req.query;
 
-    console.log("filtro titulo blablabla .... ", title)
+    console.log("filtro titulo =  ", title)
+    console.log("filtro currentPage =  ", currentPage)
+    console.log("filtro pageSize =  ", pageSize)
+
 
     const filters = {
         title: {
@@ -17,9 +20,13 @@ recursoRouter.get('/filter', async (req, res) => {
         },
     };
 
+    const offset = (currentPage - 1) * pageSize;
+
     try {
         const recursos = await Recurso.findAll({
-            where: filters
+            where: filters,
+            offset: offset,
+            limit: pageSize
         });
         // 'recursos' is an array of Recurso instances that match the query parameters.
         res.json(recursos);
