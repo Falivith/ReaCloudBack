@@ -7,23 +7,15 @@ const reaReceiver = require('../middlewares/reaReceiver')
 const { Op } = require('sequelize');
 
 recursoRouter.get('/filter', async (req, res) => {
-    let { title, knowledge_area, rea_type } = req.query;
+    let { title } = req.query;
 
-    console.log("filtro titulo blablabla .... ", title, knowledge_area, rea_type)
+    console.log("filtro titulo blablabla .... ", title)
 
     const filters = {
         title: {
             [Op.like]: `${title}%`,
         },
     };
-
-    if (knowledge_area !== undefined) {
-        filters.knowledge_area = knowledge_area;
-    }
-
-    if (rea_type !== undefined) {
-        filters.rea_type = rea_type;
-    }
 
     try {
         const recursos = await Recurso.findAll({
