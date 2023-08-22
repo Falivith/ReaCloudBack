@@ -13,7 +13,7 @@ recursoRouter.get('/filter', async (req, res) => {
 
     const filters = {
         title: {
-            [Op.like]: `${title}%`,
+            [Op.iLike]: `%${title}%`,
         },
     };
 
