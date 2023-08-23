@@ -81,6 +81,9 @@ usersRouter.get('/', async (req, res) => {
 
 
   usersRouter.post('/', async (req, res) => {
+    if (req.body.email.length < 5) {
+      return res.status(400).json({ error: 'Invalid email!' });
+    }
     
     const saltRounds = 10
     console.log('req.body = ', req.body);
