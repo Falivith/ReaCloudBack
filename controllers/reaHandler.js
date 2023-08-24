@@ -119,7 +119,7 @@ module.exports = recursoRouter
 recursoRouter.get('/resource/:id', async (req, res) => {
 
     // Get resource id from request params
-    await util.checkToken(req)
+    //await util.checkToken(req)
     const resourceId = req.params.id;
     
     try {
