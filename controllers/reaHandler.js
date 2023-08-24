@@ -9,11 +9,6 @@ const { Op } = require('sequelize');
 recursoRouter.get('/filter', async (req, res) => {
     let { title, currentPage = 1, pageSize = 10 } = req.query;
 
-    console.log("filtro titulo =  ", title)
-    console.log("filtro currentPage =  ", currentPage)
-    console.log("filtro pageSize =  ", pageSize)
-
-
     const filters = {
         title: {
             [Op.iLike]: `%${title}%`,
@@ -46,7 +41,33 @@ recursoRouter.get('/', async (req, res) => {
     res.status(201).json(reas);
 });
 
+recursoRouter.get('/user', async (req, res) => {
 
+    // Validate User
+    const decodedToken = await util.checkToken(req)
+
+    // Fetch userId from decodedToken
+    const userId = decodedToken.id;
+    
+    try {
+        // Fetch Recursos for the specified user
+        const reas = await Recurso.findAll({
+            where: { user_id: userId }, // filter by user_id
+            logging: false // Disable the Log of the query
+        });
+
+        // If no resources found, return a 404 response
+        if (!reas.length) {
+            return res.status(404).json({ error: 'No resources found for the specified user' });
+        }
+
+        // If resources were found, return them
+        return res.status(200).json(reas);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while fetching resources' });
+    }
+});
 
 
 
