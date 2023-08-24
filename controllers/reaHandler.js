@@ -118,7 +118,7 @@ module.exports = recursoRouter
 
 recursoRouter.get('/:id', (req, res) => {
     const resourceId = req.params.id;
-    console.log(reqs)
+    console.log(req)
     // Use o ID para buscar os dados do recurso no seu sistema
     // ...
     // Aqui você pode realizar uma consulta no banco de dados, chamar uma função assíncrona, etc.
