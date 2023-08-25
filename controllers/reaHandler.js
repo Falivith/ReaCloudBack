@@ -118,23 +118,18 @@ module.exports = recursoRouter
 
 recursoRouter.get('/resource/:id', async (req, res) => {
 
-    // Get resource id from request params
-    //await util.checkToken(req)
     const resourceId = req.params.id;
     
     try {
-        // Fetch Recurso with the specified id
         const recurso = await Recurso.findOne({
-            where: { id: resourceId }, // filter by id
+            where: { id: resourceId }, 
             logging: false // Disable the Log of the query
         });
 
-        // If no resource found, return a 404 response
         if (!recurso) {
             return res.status(404).json({ error: 'No resource found for the specified id' });
         }
 
-        // If resource was found, return it
         return res.status(200).json(recurso);
     } catch (error) {
         console.error(error);
