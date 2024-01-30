@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const Recurso = require('../models/recurso');
 const fs = require('fs');
 const util = require('../util/authentication');
@@ -6,6 +5,7 @@ const recursoRouter = require('express').Router();
 const reaReceiver = require('../middlewares/reaReceiver')
 const { Op } = require('sequelize');
 
+// Consultar (Filtrar) dentre todos os recursos 
 recursoRouter.get('/filter', async (req, res) => {
     let { title, currentPage = 1, pageSize = 10 } = req.query;
 
@@ -23,99 +23,79 @@ recursoRouter.get('/filter', async (req, res) => {
             offset: offset,
             limit: pageSize
         });
-        // 'recursos' is an array of Recurso instances that match the query parameters.
+
         res.json(recursos);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'An error occurred while retrieving resources.' });
+        res.status(500).json({ error: 'Ocorreu um erro com a filtragem dos recursos.' });
     }
 });
 
-
-
-
+// Consultar todos os recursos
 recursoRouter.get('/', async (req, res) => {
     const reas = await Recurso.findAll({
-        logging: false // Desativar o Log da consulta
+        logging: false
     }) 
     res.status(201).json(reas);
 });
 
+// Consultar os recursos de um usuário
 recursoRouter.get('/user', async (req, res) => {
-
-    // Validate User
     const decodedToken = await util.checkToken(req)
 
-    // Fetch userId from decodedToken
     const userId = decodedToken.id;
     
     try {
-        // Fetch Recursos for the specified user
         const reas = await Recurso.findAll({
-            where: { user_id: userId }, // filter by user_id
-            logging: false // Disable the Log of the query
+            where: { user_id: userId },
+            logging: false
         });
 
-        // If no resources found, return a 404 response
         if (!reas.length) {
-            return res.status(404).json({ error: 'No resources found for the specified user' });
+            return res.status(404).json({ error: 'Não foram encontrados recursos para esse usuário.' });
         }
 
-        // If resources were found, return them
         return res.status(200).json(reas);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'An error occurred while fetching resources' });
+        return res.status(500).json({ error: 'Erro na consulta de recursos.' });
     }
 });
 
+// Postar um recurso
+recursoRouter.post('/', reaReceiver.single('thumb'), async (req, res) => {
+    const decodedToken = await util.checkToken(req);
 
-
-
-recursoRouter.post('/', reaReceiver.single('thumb'), async (request, response) => {
-
-    // Validação Usuário
-    const decodedToken = await util.checkToken(request)
-
-    console.log(request.body)
-    if(request.body){
-
-        const imageFile = fs.readFileSync(request.file.path); // read uploaded file from temporary directory
+    if (req.body) {
+        const imageFile = fs.readFileSync(req.file.path); // read uploaded file from temporary directory
         const buffer = Buffer.from(imageFile); // convert file data to buffer
 
-        console.log(request.body)
-
-        const recurso = await Recurso.create({...request.body, user_id: decodedToken.id})
+        const recurso = await Recurso.create({ ...req.body, user_id: decodedToken.id });
 
         const recursoPronto = await recurso.update({
             thumb: buffer
-            }, { returning: true });
-      
-        fs.unlink(request.file.path, (err) => {
-          if (err) {
-            console.error(err);
-            return response.status(500).json({ error: 'Error deleting file' });
-          }
+        }, { returning: true });
+
+        fs.unlink(req.file.path, (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Erro ao deletar o arquivo temporário' });
+            }
         });
-        
-        if (recursoPronto){
-            response.status(201).json(recursoPronto);
+
+        if (recursoPronto) {
+            res.status(201).json(recursoPronto);
             console.log("Recurso cadastrado com sucesso.");
-        }
-        else{
-            response.status(400).json(recursoPronto);
+        } else {
+            res.status(400).json(recursoPronto);
             console.log("Falha ao cadastrar recurso. (Database access failed)");
         }
+    } else {
+        res.status(400).json("Falha ao cadastrar o recurso. (Null form received)");
     }
-    else{
-        response.status(400).json("Falha ao cadastrar o recurso. (Null form received)");
-    }
-})
+});
 
-module.exports = recursoRouter
-
-// ReaDetails
-
+// Consultar os detalhes de um recurso
 recursoRouter.get('/resource/:id', async (req, res) => {
 
     const resourceId = req.params.id;
@@ -127,12 +107,41 @@ recursoRouter.get('/resource/:id', async (req, res) => {
         });
 
         if (!recurso) {
-            return res.status(404).json({ error: 'No resource found for the specified id' });
+            return res.status(404).json({ error: 'O recurso com esse ID não foi encontrado.' });
         }
 
         return res.status(200).json(recurso);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'An error occurred while fetching the resource' });
+        return res.status(500).json({ error: 'Ocorreu um erro ao encontrar o recurso.' });
     }
 });
+
+// Deletar um recurso
+recursoRouter.delete('/:id', async (req, res) => {
+    const resourceId = req.params.id;
+
+    try {
+        // Validar o usuário
+        const decodedToken = await util.checkToken(req)
+        const userId = decodedToken.id;
+
+        const recurso = await Recurso.findOne({
+            where: { id: resourceId, user_id: userId }, // Adicione a condição para verificar o user_id
+            logging: false
+        });
+
+        if (!recurso) {
+            return res.status(404).json({ error: 'O recurso com esse ID não foi encontrado.' });
+        }
+
+        await recurso.destroy();
+
+        return res.status(204).send();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Ocorreu um erro ao encontrar o recurso.' });
+    }
+});
+
+module.exports = recursoRouter

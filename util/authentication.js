@@ -1,10 +1,9 @@
-
 const getTokenFrom = request => {
   const authorization = request.get('authorization') || request.body.headers.Authorization;
     if (authorization && authorization.startsWith('Bearer ')) {
       return authorization.replace('Bearer ', '')
     }
-    console.log("jwt key not provided");
+    console.log("JWT Key not provided.");
     return null
   }
 
@@ -27,7 +26,5 @@ const checkToken = async (request,response) =>{
     
     
 }
-
-
 
 module.exports = {getTokenFrom,checkToken}

@@ -1,14 +1,11 @@
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const util = require('../util/authentication');
 const usersRouter = require('express').Router()
 const multer = require('multer');
 const fs = require('fs');
-const { log } = require('console');
 
-
-// set up Multer storage
+// Configuração do Multer Storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads')
@@ -20,40 +17,40 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-usersRouter.post('/uploadPhoto',upload.single('file'),async (request, response) => {
+// Rota para upload de foto
+usersRouter.post('/uploadPhoto',upload.single('file'),async (req, res) => {
     
-  const decodedToken = await util.checkToken(request)
+  const decodedToken = await util.checkToken(req)
   
-  console.log('request.file = ', request.file);
-  const imageFile = fs.readFileSync(request.file.path); // read uploaded file from temporary directory
+  console.log('req.file = ', req.file);
+  const imageFile = fs.readFileSync(req.file.path); // read uploaded file from temporary directory
   const buffer = Buffer.from(imageFile); // convert file data to buffer
-  
 
   const user = await User.findOne({ where: { email: decodedToken.email } });
-if (user) {
-  const updatedUser = await user.update({
-    profilePicture: buffer
-  }, { returning: true });
 
-  fs.unlink(request.file.path, (err) => {
-    if (err) {
-      console.error(err);
-      return response.status(500).json({ error: 'Error deleting file' });
-    }
+  if (user) {
+    const updatedUser = await user.update({
+      profilePicture: buffer
+    }, { returning: true });
 
-    response.status(200).json(updatedUser);
-  });
-} else {
-  console.log('User not found');
-  return response.status(404).json({ error: 'User not found' });
-} 
+    fs.unlink(req.file.path, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Error deleting file' });
+      }
+
+      res.status(200).json(updatedUser);
+    });
+
+  } else {
+    console.log('User not found');
+    return res.status(404).json({ error: 'User not found' });
+  } 
 })
 
-
-
-usersRouter.get('/uploadPhoto', async (request, response) => {
+usersRouter.get('/uploadPhoto', async (req, res) => {
     
-  const decodedToken = await util.checkToken(request)
+  const decodedToken = await util.checkToken(req)
 
   console.log('decodedToken = ', decodedToken);
   const user = await User.findByPk(decodedToken.id);
@@ -61,111 +58,94 @@ usersRouter.get('/uploadPhoto', async (request, response) => {
     
   console.log('user = ', user);
     if (user.profilePicture) {
-      response.set('Content-Disposition', 'inline');
-      response.json({data: user.profilePicture})
+      res.set('Content-Disposition', 'inline');
+      res.json({data: user.profilePicture})
 
     } else {
       console.log('picture not found');
-      return response.status(200);
+      return res.status(200);
     } 
 })
-
-
-
-
 
 usersRouter.get('/', async (req, res) => {
-    const user = await User.findAll();
-    res.status(201).json(user);
-  });
+  const user = await User.findAll();
+  res.status(201).json(user);
+});
 
-
-  usersRouter.post('/', async (req, res) => {
-    if (req.body.email.length < 5) {
-      return res.status(400).json({ error: 'Invalid email!' });
-    }
-    
-    const saltRounds = 10
-    console.log('req.body = ', req.body);
-    
-    const existingUser = await User.findOne({ where: { email: req.body.email } });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
-    }
-    const passwordHashed = await bcrypt.hash(req.body.password,saltRounds)
-    const user = await User.create({...req.body, password:passwordHashed })
-    res.status(201).json(user)
-  })
-
-
-  usersRouter.put('/dados', async (request, response) => {
-    const decodedToken = await util.checkToken(request)
-    const {password,newPassword} = request.body
-    const user = await User.findByPk(decodedToken.id);
-    const passwordCorrect = user === null
-    ? false
-    : await bcrypt.compare(password, user.password)
-
-    if (!(user && passwordCorrect)) {
-        return response.status(401).json({
-          error: 'invalid username or password'
-        })
-      }
-    else{
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedPassword;
-      await user.save();
-      response.send('Password updated successfully');
-    }
+//
+usersRouter.post('/', async (req, res) => {
+  if (req.body.email.length < 5) {
+    return res.status(400).json({ error: 'Invalid email!' });
+  }
   
-  })
-
-
-  usersRouter.get('/:email', async (request, response) => {
-    
-   const decodedToken = await util.checkToken(request)
-   console.log('decodedToken', decodedToken);
-    
-    const user = await User.findByPk(decodedToken.id);
-    if (user) {
-      response.status(200).json(user)
-    } else {
-      console.log('User not found1');
-      return response.status(404).json({ error: 'User not found' });
-    } 
+  const saltRounds = 10
+  console.log('req.body = ', req.body);
+  
+  const existingUser = await User.findOne({ where: { email: req.body.email } });
+  if (existingUser) {
+    return res.status(400).json({ error: 'User already exists' });
+  }
+  const passwordHashed = await bcrypt.hash(req.body.password,saltRounds)
+  const user = await User.create({...req.body, password:passwordHashed })
+  res.status(201).json(user)
 })
-  
 
-usersRouter.put('/:email', async (request, response) => {
-
-  const decodedToken = await util.checkToken(request)
-  
-
+usersRouter.put('/dados', async (req, res) => {
+  const decodedToken = await util.checkToken(req)
+  const {password,newPassword} = req.body
   const user = await User.findByPk(decodedToken.id);
-  console.log("user = ", user);
-  if (user) {
+  const passwordCorrect = user === null
+  ? false
+  : await bcrypt.compare(password, user.password)
 
-    console.log('request.body = ', request.body);
-    const {profilePicture,...data} = request.body
-    
-    
-    if (data.nome.length ===0){
-      console.log("cheguei aqui");
-      return response.status(400).json({ error: 'nome sobrando' });  
+  if (!(user && passwordCorrect)) {
+      return res.status(401).json({
+        error: 'invalid username or password'
+      })
     }
+  else{
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+    res.send('Password updated successfully');
+  }
+})
 
-    const updatedUser = await user.update(data);
-    response.status(200).json(updatedUser)
-
+usersRouter.get('/:email', async (req, res) => {
+  const decodedToken = await util.checkToken(req)
+    
+  const user = await User.findByPk(decodedToken.id);
+  if (user) {
+    res.status(200).json(user)
   } else {
-    console.log('User not found');
-    return response.status(404).json({ error: 'User not found' });
+    console.log('User not found1');
+    return res.status(404).json({ error: 'User not found' });
   } 
 })
+  
+// Alteração de dados da conta 
+usersRouter.put('/:email', async (req, res) => {
+  try {
+    const decodedToken = await util.checkToken(req);
 
+    const user = await User.findByPk(decodedToken.id);
 
+    if (user) {
+      const { profilePicture, ...data } = req.body;
 
+      if (data.nome.length === 0) {
+        return res.status(400).json({ error: 'Nome não fornecido' });
+      }
 
-
+      const updatedUser = await user.update(data);
+      res.status(200).json(updatedUser);
+    } else {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
 
 module.exports = usersRouter

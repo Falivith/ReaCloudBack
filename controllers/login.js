@@ -5,13 +5,10 @@ const User = require('../models/user')
 const { SECRET } = require('../util/config')
 const util = require('../util/authentication')
 
-
 loginRouter.post('/checkToken', async(req, res) => {
   const decodedToken = util.checkToken(req,res)
   res.status(200).json(true);   
 });
-
-
 
 loginRouter.post('/', async(request,response)=> {
 
@@ -41,12 +38,7 @@ loginRouter.post('/', async(request,response)=> {
     process.env.SECRET,
     { expiresIn: 60*60*HoursUntilExpire }
   )
-    
-    response
-        .status(200)
-        .send({ token, nome: user.nome, email: user.email })
+    response.status(200).send({ token, nome: user.nome, email: user.email })
 })
 
-
 module.exports = loginRouter
-
