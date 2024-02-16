@@ -1,6 +1,11 @@
-class Comments extends Model {}
+const { sequelize } = require('../util/db');
+const { Model, DataTypes } = require('sequelize');
+const User = require('./user');
+const Recurso = require('./recurso');
 
-Comments.init({
+class Comment extends Model {}
+
+Comment.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -11,7 +16,7 @@ Comments.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'users', // assuming your user model is User
+            model: User,
             key: 'id'
         }
     },
@@ -19,7 +24,7 @@ Comments.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'recursos', // assuming your resource model is Recursos
+            model: Recurso,
             key: 'id'
         }
     },
@@ -33,9 +38,11 @@ Comments.init({
     }
 }, {
     sequelize,
-    modelName: 'Comments',
-    tableName: 'comments',
-    createdAt: 'created_at',
-    updatedAt: false,
-    underscored: true
+    modelName: 'comment',
+    underscored: true,
 });
+
+Comment.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
+Comment.belongsTo(Recurso, { foreignKey: 'resource_id', targetKey: 'id' })
+
+module.exports = Comment;
