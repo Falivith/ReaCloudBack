@@ -5,7 +5,7 @@ const sequelize = new Sequelize( DATABASE_URL, { dialect: 'postgres', logging: f
 
 const connectToDatabase = async () => {
   try {
-    await sequelize.authenticate({ force: true })
+    await sequelize.authenticate()
     console.log('connected to the database')
 
     await sequelize.sync()

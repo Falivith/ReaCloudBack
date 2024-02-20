@@ -44,4 +44,28 @@ commentRouter.post('/', async (req, res) => {
     }
 });
 
+// PUXA COMMENTS DO BACK
+commentRouter.get('/:id', async (req, res) => {
+    try {
+        const resourceId = req.params.id;
+
+        if (!resourceId) {
+            return res.status(400).json({ error: 'O parâmetro resourceId é obrigatório' });
+        }
+
+        const comments = await Comment.findAll({
+            where: {
+                resource_id: resourceId
+            }
+        });
+
+        res.status(200).json(comments);
+        console.log('Comentários obtidos com sucesso:', comments);
+    } catch (error) {
+        console.error('Erro ao obter os comentários:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+
 module.exports = commentRouter;
