@@ -9,7 +9,7 @@ const getCurrentDate = () => {
     return new Date().toISOString();
 };
 
-// ADICIONA COMMENTS NO BACK
+// Postar comentário
 commentRouter.post('/', async (req, res) => {
     try {
         const decodedToken = await util.checkToken(req);
@@ -44,7 +44,7 @@ commentRouter.post('/', async (req, res) => {
     }
 });
 
-// PUXA COMMENTS DO BACK
+// Consultar todos comentários de um recurso
 commentRouter.get('/:id', async (req, res) => {
     try {
         const resourceId = req.params.id;

@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Rota para upload de foto
+// Upload de foto de perfil
 usersRouter.post('/uploadPhoto', upload.single('file'), async (req, res) => {
   console.log('Recebendo arquivo');
   try {
@@ -48,6 +48,7 @@ usersRouter.post('/uploadPhoto', upload.single('file'), async (req, res) => {
   }
 });
 
+// Consulta de foto de perfil
 usersRouter.get('/uploadPhoto', async (req, res) => {
   const decodedToken = await util.checkToken(req)
 
@@ -62,11 +63,13 @@ usersRouter.get('/uploadPhoto', async (req, res) => {
     } 
 })
 
+// Consulta de todos os usuários
 usersRouter.get('/', async (req, res) => {
   const user = await User.findAll();
   res.status(201).json(user);
 });
 
+// Cadastro de usuário
 usersRouter.post('/', async (req, res) => {
 
   if (req.body.email.length < 5) {
@@ -85,6 +88,7 @@ usersRouter.post('/', async (req, res) => {
   res.status(201).json(user)
 })
 
+// Alteração de senha
 usersRouter.put('/dados', async (req, res) => {
   const decodedToken = await util.checkToken(req)
   const {password,newPassword} = req.body
@@ -106,6 +110,7 @@ usersRouter.put('/dados', async (req, res) => {
   }
 })
 
+// Consulta de dados da conta
 usersRouter.get('/:email', async (req, res) => {
   const decodedToken = await util.checkToken(req)
     
