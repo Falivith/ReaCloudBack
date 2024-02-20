@@ -1,22 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ------------------------------------
-// atualizado
 const handleGoogle = async (response) => {
     setLoading(true);
     fetch(url, {

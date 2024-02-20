@@ -3,7 +3,6 @@ const commentRouter = express.Router();
 const util = require('../util/authentication');
 const Comment = require('../models/comments');
 const User = require('../models/user');
-const fs = require('fs');
 
 const getCurrentDate = () => {
     return new Date().toISOString();
@@ -56,11 +55,14 @@ commentRouter.get('/:id', async (req, res) => {
         const comments = await Comment.findAll({
             where: {
                 resource_id: resourceId
-            }
+            },
+            include: [{
+                model: User, // Modelo do usuário
+                attributes: ['nome', 'profilePicture'] // Atributos do usuário que você deseja retornar
+            }]
         });
 
         res.status(200).json(comments);
-        console.log('Comentários obtidos com sucesso:', comments);
     } catch (error) {
         console.error('Erro ao obter os comentários:', error);
         res.status(500).json({ error: 'Erro interno do servidor' });

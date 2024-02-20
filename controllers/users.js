@@ -122,6 +122,25 @@ usersRouter.get('/:email', async (req, res) => {
     return res.status(404).json({ error: 'Usuário não encontrado.' });
   } 
 })
+
+// Consulta nome e foto do usuário por ID
+usersRouter.get('/:id/info', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    // Retorna apenas o nome e a foto do usuário
+    const { nome, profilePicture } = user;
+    res.status(200).json({ nome, profilePicture });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
   
 // Alteração de dados da conta 
 usersRouter.put('/:email', async (req, res) => {
