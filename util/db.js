@@ -5,9 +5,15 @@ const sequelize = new Sequelize( DATABASE_URL, { dialect: 'postgres', logging: f
 
 const connectToDatabase = async () => {
   try {
-    await sequelize.authenticate()
+    await sequelize.authenticate({ force: true })
     console.log('connected to the database')
-  } catch (err) {
+
+    // precisa do force:true para criar as tabelas novas
+    await sequelize.sync({ force: true })
+
+    console.log('synced with the database')
+  }
+   catch (err) {
     console.log('failed to connect to the database')
     return process.exit(1)
   }

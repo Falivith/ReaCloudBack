@@ -1,7 +1,7 @@
 const express = require('express');
-const router = express.Router();
+const commentRouter = express.Router();
 const util = require('../util/authentication');
-const Comment = require('../models/comment');
+const Comment = require('../models/comments');
 const User = require('../models/user');
 const fs = require('fs');
 
@@ -9,8 +9,8 @@ const getCurrentDate = () => {
     return new Date().toISOString();
 };
 
-// Rota para receber comentários
-router.post('/', async (req, res) => {
+// ADICIONA COMMENTS NO BACK
+commentRouter.post('/', async (req, res) => {
     try {
         const decodedToken = await util.checkToken(req);
 
@@ -44,4 +44,4 @@ router.post('/', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = commentRouter;
