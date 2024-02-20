@@ -8,8 +8,7 @@ const connectToDatabase = async () => {
     await sequelize.authenticate({ force: true })
     console.log('connected to the database')
 
-    // precisa do force:true para criar as tabelas novas
-    await sequelize.sync({ force: true })
+    await sequelize.sync()
 
     console.log('synced with the database')
   }
