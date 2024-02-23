@@ -31,6 +31,3 @@ exports.uploadProfilePicture = async (req, res) => {
     res.status(500).json({ error: 'Erro interno de API.' });
   }
 };
-
-// Este arquivo não pode usar o module.exports no final pq isso exporta só 1 função, e o controller
-// é um conjunto de handlers/funções, então é preciso declarar export.nomeFunc para cada função =)

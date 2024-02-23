@@ -2,12 +2,12 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const util = require('../util/authentication');
 const usersRouter = require('express').Router()
-const upload = require('../middlewares/userPictureMulter')
+const { upload, resizeImage } = require('../middlewares/userPictureMulter')
 const usersController = require('../controllers/usersController');
 const fs = require('fs');
 
 // Upload de foto de perfil
-usersRouter.post('/uploadPhoto', upload.single('file'), usersController.uploadProfilePicture);
+usersRouter.post('/uploadPhoto', upload.single('file'), resizeImage, usersController.uploadProfilePicture);
 
 // Consulta de foto de perfil
 usersRouter.get('/uploadPhoto', async (req, res) => {
