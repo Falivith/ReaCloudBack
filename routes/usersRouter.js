@@ -2,51 +2,12 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const util = require('../util/authentication');
 const usersRouter = require('express').Router()
-const multer = require('multer');
+const upload = require('../middlewares/userPictureMulter')
+const usersController = require('../controllers/usersController');
 const fs = require('fs');
 
-// Configuração do Multer Storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads');
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now());
-  },
-});
-
-const upload = multer({ storage: storage });
-
 // Upload de foto de perfil
-usersRouter.post('/uploadPhoto', upload.single('file'), async (req, res) => {
-  console.log('Recebendo arquivo');
-  try {
-    const decodedToken = await util.checkToken(req);
-    const imageFile = fs.readFileSync(req.file.path);
-    const buffer = Buffer.from(imageFile);
-
-    const user = await User.findOne({ where: { email: decodedToken.email } });
-
-    if (!user) {
-      console.log('Usuário não encontrado.');
-      return res.status(404).json({ error: 'Usuário não encontrado.' });
-    }
-
-    const updatedUser = await user.update({ profilePicture: buffer }, { returning: true });
-
-    fs.unlink(req.file.path, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Erro ao deletar o arquivo temporário.' });
-      }
-
-      res.status(200).json(updatedUser);
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro interno de API.' });
-  }
-});
+usersRouter.post('/uploadPhoto', upload.single('file'), usersController.uploadProfilePicture);
 
 // Consulta de foto de perfil
 usersRouter.get('/uploadPhoto', async (req, res) => {

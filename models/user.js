@@ -1,9 +1,7 @@
-/* eslint-disable */
 const { Model, DataTypes} = require('sequelize');
 const { sequelize } = require('../util/db')
 
 
-// eslint-disable-next-line require-jsdoc
 class User extends Model {}
 User.init({
   id: {

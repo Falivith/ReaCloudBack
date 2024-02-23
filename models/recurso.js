@@ -1,10 +1,7 @@
-/* eslint-disable */
 const { Model, DataTypes } = require('sequelize');
 const { sequelize } = require('../util/db');
 const User = require('./user');
 
-
-// eslint-disable-next-line require-jsdoc
 class Recurso extends Model {}
 Recurso.init({
   id: {

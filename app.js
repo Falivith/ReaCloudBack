@@ -4,12 +4,12 @@ const path = require('path');
 require('express-async-errors')
 
 const cors = require('cors');
-const usersRouter = require('./controllers/users');
-const loginRouter = require('./controllers/login');
+const usersRouter = require('./routes/usersRouter');
+const loginRouter = require('./routes/loginRouter');
 const errorHandler = require('./middlewares/errorHandler');
-const authRouter = require('./controllers/googleAuth');
-const recursoRouter = require('./controllers/reaHandler');
-const commentRouter = require('./controllers/commentsHandler');
+const authRouter = require('./routes/googleAuthRouter');
+const recursoRouter = require('./routes/recursoRouter');
+const commentRouter = require('./routes/commentsRouter');
 
 app.use(cors());
 app.use(express.static('dist'));

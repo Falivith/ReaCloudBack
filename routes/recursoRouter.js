@@ -2,7 +2,7 @@ const Recurso = require('../models/recurso');
 const fs = require('fs');
 const util = require('../util/authentication');
 const recursoRouter = require('express').Router();
-const reaReceiver = require('../middlewares/reaReceiver')
+const reaReceiver = require('../middlewares/reaPictureMulter')
 const { Op } = require('sequelize');
 
 // Consultar (Filtrar) dentre todos os recursos 
