@@ -2,11 +2,11 @@
   "name": "reacloudback",
   "version": "1.0.0",
   "description": "ReaCloud is a digital indexer for Open Educational Resources, which allows it users to search, evaluate or publish metadata of this resources 🎓",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "vitest",
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "buildStatic": "cd ../ReaCloudFront; vite build; cp -r dist ../ReaCloudBack",
     "buildWindows": "cd .. && cd ReaCloudFront && npm run build && cd ..\\ReaCloudBack && cd ..\\ReaCloudFront && xcopy /E /I /Y dist ..\\ReaCloudBack\\dist"
   },
