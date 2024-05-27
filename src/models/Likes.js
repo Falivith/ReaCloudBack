@@ -11,7 +11,7 @@ Likes.init({
         allowNull: false
     },
     user_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.TEXT,
         allowNull: false,
         references: {
             model: 'users', // assuming your user model is User

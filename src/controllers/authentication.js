@@ -1,19 +1,14 @@
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
 const jwt = require('jsonwebtoken');
-
-// todas as funções de autenticação ficarão nesse arquivo
-//
-// ideia: para logar o user usa-se o verifyGoogleToken(), essa função retorna um payload com dados do usuário
-// usamos esses dados para criar o token de sessão JWT com a função createJWT()
-// depois que esse token JWT for criado, ele é passado no request
-// e toda vez que precisar verificar o usuário com ele, utiliza o checkToken()
+const User = require('../models/user.js');
 
 async function verifyGoogleToken(token) {
   const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.CLIENT_ID,
   });
+
   const payload = ticket.getPayload();
   return payload;
   
@@ -42,49 +37,54 @@ async function createJWT(payload) {
   return token;
 }
 
+async function checkToken(request) {
+  const token = request.headers.authorization?.split(' ')[1]; 
 
-async function checkToken(request,response) {
-  try {
-    const token = request.headers.authorization?.split(' ')[1]; // extracts the token from the Authorization header if it is present and properly formatted as a Bearer token
-    if (!token) {
-      return response.status(401).json({ error: 'Token missing' });
-    }
-
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-    return decoded;
-  } catch (err) {
-      if (err instanceof jwt.TokenExpiredError) {
-          return response.status(401).json({ error: 'Token expired' });
-          }
-    return response.status(401).json({ error: `${err}` });
+  if (!token) {
+    throw new Error('Token missing');
   }
+
+  jwt.verify(token, process.env.JWT_SECRET)
+  return jwt.verify(token, process.env.JWT_SECRET);
+}
+
+async function findOrCreateUser(payload) {
+  let user = await User.findOne({ id: payload.sub });
+  if (!user) {
+    user = new User({
+      id: payload.sub,
+      given_name: payload.given_name,
+      family_name: payload.family_name,
+      email: payload.email,
+      institution: getInstitutionFromHd(payload.hd),
+      profilePicture: payload.picture,
+    });
+    await user.save();
+  }
+  return user;
+}
+
+// TODO: Pegar sufixos UFSM FURG UFRGS
+function getInstitutionFromHd(suffix) {
+  const emailToInstitutionMap = new Map();
+  const emailInstitutionPairs = [
+    ['inf.ufpel.edu.br', 'UFPEL'],
+    ['usp.br', 'USP'],
+    ['unicamp.br', 'UNICAMP'],
+    ['ufrj.br', 'UFRJ'],
+    ['ufrgs.br', 'UFRGS']
+  ];
+
+  emailInstitutionPairs.forEach(([suffix, institution]) => {
+    emailToInstitutionMap.set(suffix, institution);
+  });
+
+  return emailToInstitutionMap[suffix];
 }
 
 module.exports = {
   verifyGoogleToken,
   createJWT,
-  checkToken
+  checkToken,
+  findOrCreateUser
 };
-
-
-
-// ABAIXO: CÓDIGO ANTIGO
-// const checkToken = async (request,response) =>{
-//   const jwt = require('jsonwebtoken')
-  
-//   try{
-//   const decodedToken = await jwt.verify(getTokenFrom(request), process.env.SECRET)
-//   if (!decodedToken) {
-//     return response.status(401).json({ error: 'token invalid' })
-//   }
-//   return decodedToken
-//   }
-//   catch (err) {
-//     if (err instanceof jwt.TokenExpiredError) {
-//       return response.status(401).json({ error: 'Token expired' });
-//     }
-//   }
-// }
-
-// module.exports = {checkToken}
-

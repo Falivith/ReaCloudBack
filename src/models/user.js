@@ -4,26 +4,25 @@ const { sequelize } = require('../database/db')
 class User extends Model {}
 User.init({
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.TEXT,
     primaryKey: true,
-    autoIncrement: true,
   },
   profilePicture: {
     type: DataTypes.BLOB, 
   },
-  nome: {
+  given_name: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  sobrenome: {
+  family_name: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  instituicao: {
+  institution: {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  perfil: {
+  profile: {
     type: DataTypes.TEXT,
     allowNull: true,
   },
@@ -36,7 +35,6 @@ User.init({
     type: DataTypes.TEXT,
     allowNull: true,
   },
-
 }, {
   sequelize,
   underscored: true,
@@ -56,7 +54,7 @@ User.prototype.toJSON = function () {
   return values;
 };
 
-//User.sync({ logging: false });
+User.sync({ logging: false });
 
 
 module.exports = User

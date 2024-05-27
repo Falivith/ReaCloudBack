@@ -10,7 +10,7 @@ Recurso.init({
     autoIncrement: true,
   },
   user_id:{
-    type: DataTypes.INTEGER,
+    type: DataTypes.TEXT,
     allowNull: false,
     references: {
       model: User,

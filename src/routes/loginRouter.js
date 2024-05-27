@@ -4,11 +4,6 @@ const loginRouter = require('express').Router()
 const User = require('../models/user.js')
 const util = require('../controllers/authentication.js')
 
-loginRouter.post('/checkToken', async(req, res) => {
-  const decodedToken = util.checkToken(req,res)
-  res.status(200).json(true);   
-});
-
 loginRouter.post('/', async(request,response)=> {
 
     const {email,password} = request.body

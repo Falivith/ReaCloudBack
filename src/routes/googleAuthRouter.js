@@ -1,68 +1,34 @@
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 const authRouter = require('express').Router()
 const jwt = require("jsonwebtoken");
 const User = require('../models/user.js')
 const axios = require('axios');
+const { checkToken, createJWT, verifyGoogleToken, findOrCreateUser } = require("../controllers/authentication.js");
 
-async function verifyGoogleToken(token) {
+const oAuth2Client = new OAuth2Client(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  'postmessage',
+);
+
+authRouter.post("/", async (req, res) => {
+  const { tokens } = await oAuth2Client.getToken(req.body.code);
+  let payload = await verifyGoogleToken(tokens.id_token);
+  let jwt = await createJWT(payload);
+  findOrCreateUser(payload);
+  res.status(200).json({ jwt_token: jwt });
+});
+
+authRouter.post("/checkToken", async (req, res) => {
   try {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: GOOGLE_CLIENT_ID,
-    });
-    return { payload: ticket.getPayload() };
+    const decoded = await checkToken(req);
+    res.status(200).json(decoded);
   } catch (error) {
-    return { error: "Invalid user detected. Please try again" };
-  }
-}
-
-authRouter.post("/googleLogin", async (req, res) => {
-  try {
-    // console.log({ verified: verifyGoogleToken(req.body.credential) });
-    if (req.body.credential) {
-      const verificationResponse = await verifyGoogleToken(req.body.credential);
-
-      if (verificationResponse.error) {
-        return res.status(400).json({
-          message: verificationResponse.error,
-        });
-      }
-      const profile = verificationResponse?.payload;
-      const response = await axios.get(profile.picture, { responseType: 'arraybuffer' });
-      const buffer = Buffer.from(response.data, );
-      
-      
-      const [user, created] = await User.findOrCreate({
-        where: { email: profile.email },
-        defaults: {
-          nome: profile.given_name,
-          sobrenome: profile.family_name,
-          profilePicture: buffer,
-        }
-      });
-
-      console.log('created = ', created);
-
-      
-      res.status(201).json({
-        message: "Signup was successful",
-        user: {
-          firstName: profile?.given_name,
-          lastName: profile?.family_name,
-          picture: profile?.picture,
-          email: profile?.email,
-          token:  jwt.sign({ email: profile?.email, id: user.id }, process.env.SECRET, {
-            expiresIn: "1d",
-          }),
-        },
-      });
+    if (error instanceof jwt.TokenExpiredError) {
+      res.status(401).json({ error: 'Token expired' });
+    } else {
+      res.status(401).json({ error: `${error}` });
     }
-  } catch (error) {
-    res.status(500).json({
-      message: "An error occured. Registration failed.",
-    });
   }
 });
 

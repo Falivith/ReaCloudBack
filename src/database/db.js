@@ -1,24 +1,23 @@
-const Sequelize = require('sequelize')
-const { DATABASE_URL } = require('./config')
+const Sequelize = require("sequelize");
+const { DATABASE_URL } = require("./config");
 
-const sequelize = new Sequelize( DATABASE_URL, { dialect: 'postgres', logging: true });
+const sequelize = new Sequelize(DATABASE_URL, {
+  dialect: "postgres",
+  logging: false,
+});
 
 const connectToDatabase = async () => {
   try {
-    await sequelize.authenticate()
-    console.log('connected to the database')
-
-    await sequelize.sync()
-
-    console.log('synced with the database')
-  }
-   catch (err) {
-    console.log(err);
-    console.log('failed to connect to the database')
-    return process.exit(1)
+    await sequelize.authenticate();
+    console.log("Connected to the database");
+    await sequelize.sync({ force: false });
+    console.log("Synchronized the database");
+  } catch (err) {
+    console.log("Failed to connect to the database");
+    return process.exit(1);
   }
 
-  return null
-}
+  return null;
+};
 
-module.exports = { connectToDatabase, sequelize }
+module.exports = { connectToDatabase, sequelize };

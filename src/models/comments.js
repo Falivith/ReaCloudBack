@@ -13,7 +13,7 @@ Comment.init({
         allowNull: false
     },
     user_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.TEXT,
         allowNull: false,
         references: {
             model: User,
