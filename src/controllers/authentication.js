@@ -49,19 +49,29 @@ async function checkToken(request) {
 }
 
 async function findOrCreateUser(payload) {
-  let user = await User.findOne({ id: payload.sub });
-  if (!user) {
-    user = new User({
-      id: payload.sub,
-      given_name: payload.given_name,
-      family_name: payload.family_name,
-      email: payload.email,
-      institution: getInstitutionFromHd(payload.hd),
-      profilePicture: payload.picture,
+  try {
+    const [user, created] = await User.findOrCreate({
+      where: { id: payload.sub },
+      defaults: {
+        given_name: payload.given_name,
+        family_name: payload.family_name,
+        email: payload.email,
+        institution: getInstitutionFromHd(payload.hd),
+        profilePicture: payload.picture,
+      },
     });
-    await user.save();
+
+    if (created) {
+      console.log('New user created:', user);
+    } else {
+      console.log('User already exists:', user);
+    }
+
+    return user;
+  } catch (error) {
+    console.error('Error in findOrCreateUser:', error);
+    throw error;
   }
-  return user;
 }
 
 // TODO: Pegar sufixos UFSM FURG UFRGS
