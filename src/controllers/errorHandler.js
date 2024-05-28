@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken')
 
-
 function errorHandler(err, req, res, next) {
   if (err instanceof jwt.JsonWebTokenError) {
     if (err instanceof jwt.TokenExpiredError) {

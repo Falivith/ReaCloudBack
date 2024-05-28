@@ -66,17 +66,10 @@ recursoRouter.get('/user', async (req, res) => {
 recursoRouter.post('/', reaReceiver.single('thumb'), async (req, res) => {
     const decodedToken = await util.checkToken(req)
 
-    console.log("Alo", decodedToken);
     if (req.body) {
-        const imageFile = fs.readFileSync(req.file.path); // read uploaded file from temporary directory
-        const buffer = Buffer.from(imageFile); // convert file data to buffer
-
-        console.log(req.body);
-
+        const imageFile = fs.readFileSync(req.file.path);
+        const buffer = Buffer.from(imageFile);
         const recurso = await Recurso.create({ ...req.body, user_id: decodedToken.id });
-
-        console.log("Depois do Create");
-        console.log(req.body);
         const recursoPronto = await recurso.update({
             thumb: buffer
         }, { returning: true });
