@@ -33,7 +33,7 @@ async function createJWT(payload) {
     name: payload.name,
     email: payload.email,
   };
-  const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '2h' });
+  const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '72h' });
   return token;
 }
 

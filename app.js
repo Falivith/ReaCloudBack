@@ -18,7 +18,7 @@ const commentRouter = require('./src/routes/commentsRouter');
 app.use('/api/users', usersRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/recurso', recursoRouter);
-app.use('/api/comment', commentRouter);
+app.use('/api/comments', commentRouter);
 
 // const loginRouter = require('./src/routes/loginRouter'); // TODO: Rota morta
 // Rota morta app.use('/api/login', loginRouter);

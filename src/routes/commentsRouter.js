@@ -12,7 +12,7 @@ const getCurrentDate = () => {
 commentRouter.post('/', async (req, res) => {
     try {
         const decodedToken = await util.checkToken(req);
-
+        
         if (!decodedToken) {
             return res.status(401).json({ error: 'Token inválido ou expirado' });
         }
@@ -51,17 +51,21 @@ commentRouter.get('/:id', async (req, res) => {
         if (!resourceId) {
             return res.status(400).json({ error: 'O parâmetro resourceId é obrigatório' });
         }
-
+        console.log(resourceId);
         const comments = await Comment.findAll({
             where: {
                 resource_id: resourceId
             },
             include: [{
                 model: User, // Modelo do usuário
-                attributes: ['nome', 'profilePicture'] // Atributos do usuário que você deseja retornar
+                attributes: ['given_name', 'profilePicture'] // Atributos do usuário que você deseja retornar
             }]
         });
 
+        response = {
+            comments: comments,
+        }
+        console.log('Comentarios', comments);
         res.status(200).json(comments);
     } catch (error) {
         console.error('Erro ao obter os comentários:', error);
@@ -69,5 +73,35 @@ commentRouter.get('/:id', async (req, res) => {
     }
 });
 
+// Deletar comentário
+commentRouter.delete('/:id', async (req, res) => {
+    try {
+        const commentId = req.params.id;
+        const decodedToken = await util.checkToken(req);
+
+        if (!decodedToken) {
+            return res.status(401).json({ error: 'Token inválido ou expirado' });
+        }
+
+        const comment = await Comment.findByPk(commentId);
+
+        if (!comment) {
+            return res.status(404).json({ error: 'Comentário não encontrado' });
+        }
+
+        // Verifique se o usuário que está tentando deletar o comentário é o autor do mesmo
+        if (decodedToken.id !== comment.user_id) {
+            return res.status(403).json({ error: 'Você não tem permissão para deletar este comentário' });
+        }
+
+        // Se o usuário for o autor do comentário, proceda com a exclusão
+        await comment.destroy();
+        res.status(204).end(); // Retorna 204 No Content para indicar que o comentário foi deletado com sucesso
+        console.log('Comentário deletado com sucesso:', commentId);
+    } catch (error) {
+        console.error('Erro ao deletar o comentário:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
 
 module.exports = commentRouter;

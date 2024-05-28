@@ -25,25 +25,25 @@ Recurso.init({
   },
   reaType: {
     type: DataTypes.ENUM,
-    values: Object.values(tipoRecurso),
+    values: Object.values(tipoRecurso), // Usando os valores do objeto tipoRecurso
   },
   link: {
     type: DataTypes.STRING,
   },
   targetPublic: {
     type: DataTypes.ENUM,
-    values: Object.values(publicoAlvo),
+    values: Object.values(publicoAlvo), // Usando os valores do objeto publicoAlvo
   },
   thumb: {
     type: DataTypes.BLOB,
   },
   knowledgeArea: {
     type: DataTypes.ENUM,
-    values: Object.values(areasConhecimento),
+    values: Object.values(areasConhecimento), // Usando os valores do objeto areasConhecimento
   },
   license: {
     type: DataTypes.ENUM,
-    values: Object.values(tiposLicenca), 
+    values: Object.values(tiposLicenca), // Usando os valores do objeto tiposLicenca
   },
   language: {
     type: DataTypes.ENUM,
