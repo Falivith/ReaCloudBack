@@ -25,51 +25,51 @@ usersRouter.get('/uploadPhoto', async (req, res) => {
 })
 
 // Consulta de todos os usuários
-usersRouter.get('/', async (req, res) => {
-  const user = await User.findAll();
-  res.status(201).json(user);
-});
+// usersRouter.get('/', async (req, res) => {
+//   const user = await User.findAll();
+//   res.status(201).json(user);
+// });
 
 // Cadastro de usuário
-usersRouter.post('/', async (req, res) => {
+// usersRouter.post('/', async (req, res) => {
 
-  if (req.body.email.length < 5) {
-    return res.status(400).json({ error: 'Invalid email!' });
-  }
+//   if (req.body.email.length < 5) {
+//     return res.status(400).json({ error: 'Invalid email!' });
+//   }
 
-  const saltRounds = 10
+//   const saltRounds = 10
 
-  const existingUser = await User.findOne({ where: { email: req.body.email } });
-  if (existingUser) {
-    return res.status(400).json({ error: 'User already exists' });
-  }
+//   const existingUser = await User.findOne({ where: { email: req.body.email } });
+//   if (existingUser) {
+//     return res.status(400).json({ error: 'User already exists' });
+//   }
 
-  const passwordHashed = await bcrypt.hash(req.body.password, saltRounds)
-  const user = await User.create({ ...req.body, password: passwordHashed })
-  res.status(201).json(user)
-})
+//   const passwordHashed = await bcrypt.hash(req.body.password, saltRounds)
+//   const user = await User.create({ ...req.body, password: passwordHashed })
+//   res.status(201).json(user)
+// })
 
 // Alteração de senha
-usersRouter.put('/dados', async (req, res) => {
-  const decodedToken = await util.checkToken(req)
-  const { password, newPassword } = req.body
-  const user = await User.findByPk(decodedToken.id);
-  const passwordCorrect = user === null
-    ? false
-    : await bcrypt.compare(password, user.password)
+// usersRouter.put('/dados', async (req, res) => {
+//   const decodedToken = await util.checkToken(req)
+//   const { password, newPassword } = req.body
+//   const user = await User.findByPk(decodedToken.id);
+//   const passwordCorrect = user === null
+//     ? false
+//     : await bcrypt.compare(password, user.password)
 
-  if (!(user && passwordCorrect)) {
-    return res.status(401).json({
-      error: 'invalid username or password'
-    })
-  }
-  else {
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
-    res.send('Password updated successfully');
-  }
-})
+//   if (!(user && passwordCorrect)) {
+//     return res.status(401).json({
+//       error: 'invalid username or password'
+//     })
+//   }
+//   else {
+//     const hashedPassword = await bcrypt.hash(newPassword, 10);
+//     user.password = hashedPassword;
+//     await user.save();
+//     res.send('Password updated successfully');
+//   }
+// })
 
 // Consulta de dados da conta
 usersRouter.get('/:email', async (req, res) => {
@@ -99,8 +99,8 @@ usersRouter.get('/:id/info', async (req, res) => {
     }
 
     // Retorna apenas o nome e a foto do usuário
-    const { nome, profilePicture } = user;
-    res.status(200).json({ nome, profilePicture });
+    const { given_name, profilePicture } = user;
+    res.status(200).json({ given_name, profilePicture });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro interno do servidor' });
@@ -117,7 +117,7 @@ usersRouter.put('/:email', async (req, res) => {
     if (user) {
       const { profilePicture, ...data } = req.body;
 
-      if (data.nome.length === 0) {
+      if (data.given_name.length === 0) {
         return res.status(400).json({ error: 'Nome não fornecido' });
       }
 

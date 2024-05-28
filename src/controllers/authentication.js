@@ -44,7 +44,6 @@ async function checkToken(request) {
     throw new Error('Token missing');
   }
 
-  jwt.verify(token, process.env.JWT_SECRET)
   return jwt.verify(token, process.env.JWT_SECRET);
 }
 
