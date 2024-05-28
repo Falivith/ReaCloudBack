@@ -117,17 +117,20 @@ recursoRouter.get('/resource/:id', async (req, res) => {
 
 // Deletar um recurso
 recursoRouter.delete('/:id', async (req, res) => {
-    const resourceId = req.params.id;
-
     try {
         // Validar o usuário
+        const resourceId = req.params.id;
         const decodedToken = await util.checkToken(req)
         const userId = decodedToken.id;
+
+        console.log("UserId:", userId, "RecursoId:", resourceId);
 
         const recurso = await Recurso.findOne({
             where: { id: resourceId, user_id: userId }, // Adicione a condição para verificar o user_id
             logging: false
         });
+
+        console.log("Recurso", recurso);
 
         if (!recurso) {
             return res.status(404).json({ error: 'O recurso com esse ID não foi encontrado.' });
