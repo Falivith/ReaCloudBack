@@ -8,7 +8,7 @@ User.init({
     primaryKey: true,
   },
   profilePicture: {
-    type: DataTypes.BLOB, 
+    type: DataTypes.STRING,
   },
   given_name: {
     type: DataTypes.TEXT,
@@ -30,10 +30,6 @@ User.init({
     type: DataTypes.TEXT,
     allowNull: false,
     unique: true
-  },
-  password: {
-    type: DataTypes.TEXT,
-    allowNull: true,
   },
 }, {
   sequelize,

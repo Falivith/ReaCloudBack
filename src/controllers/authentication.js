@@ -56,7 +56,7 @@ async function findOrCreateUser(payload) {
         given_name: payload.given_name,
         family_name: payload.family_name,
         email: payload.email,
-        institution: getInstitutionFromHd(payload.hd),
+        institution: await getInstitutionFromHd(payload.hd),
         profilePicture: payload.picture,
       },
     });
@@ -75,7 +75,7 @@ async function findOrCreateUser(payload) {
 }
 
 // TODO: Pegar sufixos UFSM FURG UFRGS
-function getInstitutionFromHd(suffix) {
+async function getInstitutionFromHd(suffix) {
   const emailToInstitutionMap = new Map();
   const emailInstitutionPairs = [
     ['inf.ufpel.edu.br', 'UFPEL'],
@@ -89,7 +89,7 @@ function getInstitutionFromHd(suffix) {
     emailToInstitutionMap.set(suffix, institution);
   });
 
-  return emailToInstitutionMap[suffix];
+  return emailToInstitutionMap.get(suffix) || null;
 }
 
 module.exports = {
