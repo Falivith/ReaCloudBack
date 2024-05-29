@@ -11,10 +11,8 @@ recursoRouter.get('/filter', async (req, res) => {
 
     const filters = {};
 
-    console.log(title, knowledge_area, rea_type);
-    // Adicionar filtros se os parâmetros estiverem presentes na solicitação
     if (title) {
-        filters.title = title;
+        filters.title = { [Op.iLike]: `%${title}%` };
     }
     if (knowledge_area) {
         filters.knowledgeArea = knowledge_area;
@@ -39,9 +37,6 @@ recursoRouter.get('/filter', async (req, res) => {
         res.status(500).json({ error: 'Ocorreu um erro com a filtragem dos recursos.' });
     }
 });
-
-
-
 
 // Consultar todos os recursos
 recursoRouter.get('/', async (req, res) => {
