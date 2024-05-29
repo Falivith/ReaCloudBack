@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const { ValidationError } = require('sequelize');
 
 function errorHandler(err, req, res, next) {
   if (err instanceof jwt.JsonWebTokenError) {
