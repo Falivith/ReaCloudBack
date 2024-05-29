@@ -11,7 +11,6 @@ app.use(cors());
 app.use(express.static("dist"));
 app.use(express.json());
 
-console.log(PORT);
 const usersRouter = require("./src/routes/usersRouter");
 const authRouter = require("./src/routes/googleAuthRouter");
 const recursoRouter = require("./src/routes/recursoRouter");

@@ -79,7 +79,6 @@ usersRouter.get('/:email', async (req, res) => {
     if (user) {
       res.status(200).json(user);
     } else {
-      console.log('Usuário não encontrado.');
       return res.status(404).json({ error: 'Usuário não encontrado.' });
     }
   } catch (error) {

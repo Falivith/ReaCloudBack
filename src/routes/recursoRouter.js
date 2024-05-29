@@ -23,7 +23,6 @@ recursoRouter.get('/filter', async (req, res) => {
 
     const offset = (currentPage - 1) * pageSize;
 
-    console.log('Filters:', filters);
     try {
         const recursos = await Recurso.findAll({
             where: filters,
@@ -131,14 +130,10 @@ recursoRouter.delete('/:id', async (req, res) => {
         const decodedToken = await util.checkToken(req)
         const userId = decodedToken.id;
 
-        console.log("UserId:", userId, "RecursoId:", resourceId);
-
         const recurso = await Recurso.findOne({
             where: { id: resourceId, user_id: userId }, // Adicione a condição para verificar o user_id
             logging: false
         });
-
-        console.log("Recurso", recurso);
 
         if (!recurso) {
             return res.status(404).json({ error: 'O recurso com esse ID não foi encontrado.' });
