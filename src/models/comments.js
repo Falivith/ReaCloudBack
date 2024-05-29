@@ -43,7 +43,15 @@ Comment.init({
     underscored: true,
 });
 
-Comment.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
-Comment.belongsTo(Recurso, { foreignKey: 'resource_id', targetKey: 'id' })
+Comment.belongsTo(User, { 
+    foreignKey: 'user_id', 
+    targetKey: 'id', 
+    onDelete: 'CASCADE' 
+});
+Comment.belongsTo(Recurso, { 
+    foreignKey: 'resource_id', 
+    targetKey: 'id', 
+    onDelete: 'CASCADE' 
+});
 
 module.exports = Comment;

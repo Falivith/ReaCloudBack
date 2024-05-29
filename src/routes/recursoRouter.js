@@ -7,16 +7,25 @@ const { Op } = require('sequelize');
 
 // Consultar (Filtrar) dentre todos os recursos 
 recursoRouter.get('/filter', async (req, res) => {
-    let { title, currentPage = 1, pageSize = 10 } = req.query;
+    let { title, knowledge_area, rea_type, currentPage = 1, pageSize = 10 } = req.query;
 
-    const filters = {
-        title: {
-            [Op.iLike]: `%${title}%`,
-        },
-    };
+    const filters = {};
+
+    console.log(title, knowledge_area, rea_type);
+    // Adicionar filtros se os parâmetros estiverem presentes na solicitação
+    if (title) {
+        filters.title = title;
+    }
+    if (knowledge_area) {
+        filters.knowledgeArea = knowledge_area;
+    }
+    if (rea_type) {
+        filters.reaType = rea_type;
+    }
 
     const offset = (currentPage - 1) * pageSize;
 
+    console.log('Filters:', filters);
     try {
         const recursos = await Recurso.findAll({
             where: filters,
@@ -30,6 +39,9 @@ recursoRouter.get('/filter', async (req, res) => {
         res.status(500).json({ error: 'Ocorreu um erro com a filtragem dos recursos.' });
     }
 });
+
+
+
 
 // Consultar todos os recursos
 recursoRouter.get('/', async (req, res) => {
@@ -52,7 +64,7 @@ recursoRouter.get('/user', async (req, res) => {
         });
 
         if (!reas.length) {
-            return res.status(404).json({ error: 'Não foram encontrados recursos para esse usuário.' });
+            return res.status(200).json([]);
         }
 
         return res.status(200).json(reas);
@@ -61,6 +73,7 @@ recursoRouter.get('/user', async (req, res) => {
         return res.status(500).json({ error: 'Erro na consulta de recursos.' });
     }
 });
+
 
 // Postar um recurso
 recursoRouter.post('/', reaReceiver.single('thumb'), async (req, res) => {
