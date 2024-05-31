@@ -29,19 +29,33 @@ recursoRouter.get('/filter', async (req, res) => {
             where: filters,
             offset: offset,
             limit: pageSize,
-            /*include: [{
-                model: Like,
-                attributes: [[fn('COUNT', col('id')), 'numLikes']],
-                required: false // Mesmo que não contenham likes
-            }],
-            group: ['Recurso.id'] // Precisamos agrupar por Recurso.id para garantir que a contagem de likes seja correta*/
         });
 
-        /*recursos.forEach(recurso => {
-            console.log(`Recurso: ${recurso.id}, Likes: ${recurso.Likes ? recurso.Likes.numLikes : 0}`);
-        });*/
+        // Map recurso IDs to get the like counts
+        const recursoIds = recursos.map(recurso => recurso.id);
 
-        res.json(recursos);
+        // Get the like counts for each recurso
+        const likeCounts = await Like.findAll({
+            attributes: ['recurso_id', [fn('COUNT', col('id')), 'numLikes']],
+            where: { recurso_id: recursoIds },
+            group: ['recurso_id']
+        });
+
+        // Create a map of recurso_id to numLikes
+        const likeCountsMap = likeCounts.reduce((acc, like) => {
+            acc[like.recurso_id] = like.dataValues.numLikes;
+            return acc;
+        }, {});
+
+        // Add numLikes to each recurso
+        const recursosWithLikes = recursos.map(recurso => {
+            return {
+                ...recurso.dataValues,
+                numLikes: likeCountsMap[recurso.id] || 0
+            };
+        });
+
+        res.json(recursosWithLikes);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Ocorreu um erro com a filtragem dos recursos.' });
