@@ -49,7 +49,7 @@ const start = async () => {
     console.log('Conexão com o banco de dados feita com sucesso.');
 
     // Sincroniza todos modelos
-    await sequelize.sync({ logging: false, force: false });
+    await sequelize.sync({ logging: false, force: true });
     console.log('Todos modelos foram sincronizados.');
 
     app.listen(PORT, () => {

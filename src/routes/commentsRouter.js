@@ -51,22 +51,19 @@ commentRouter.get('/:id', async (req, res) => {
         if (!resourceId) {
             return res.status(400).json({ error: 'O parâmetro resourceId é obrigatório' });
         }
-        console.log(resourceId);
         const comments = await Comment.findAll({
             where: {
                 resource_id: resourceId
             },
             include: [{
-                model: User, // Modelo do usuário
-                attributes: ['given_name', 'profilePicture'] // Atributos do usuário que você deseja retornar
+                model: User,
+                attributes: ['given_name', 'profilePicture']
             }]
         });
 
         response = {
             comments: comments,
         }
-
-        console.log('Comentarios', comments);
         
         res.status(200).json(comments);
     } catch (error) {
