@@ -159,6 +159,29 @@ recursoRouter.delete('/:id', async (req, res) => {
     }
 });
 
+recursoRouter.get('/:recursoId/liked', async (req, res) => {
+    try {
+        const decodedToken = await util.checkToken(req);
+        const userId = decodedToken.id;
+
+        const existingLike = await Like.findOne({
+            where: {
+                user_id: userId,
+                recurso_id: req.params.recursoId
+            }
+        });
+
+        if (existingLike) {
+            return res.status(200).json({ liked: true });
+        } else {
+            return res.status(200).json({ liked: false });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Ocorreu um erro ao consultar a avaliação.' });
+    }
+});
+
 // Adicionar ou remover um like de um recurso para um usuário
 recursoRouter.post('/:recursoId/like', async (req, res) => {
     try {
@@ -189,6 +212,22 @@ recursoRouter.post('/:recursoId/like', async (req, res) => {
         }
         console.error(error);
         return res.status(500).json({ error: 'Erro ao processar a solicitação de Like.' });
+    }
+});
+
+// Contar os likes para um recurso específico
+recursoRouter.get('/:recursoId/likes/count', async (req, res) => {
+    try {
+        const likeCount = await Like.count({
+            where: {
+                recurso_id: req.params.recursoId
+            }
+        });
+
+        return res.status(200).json({ likeCount });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Ocorreu um erro ao obter a contagem de likes.' });
     }
 });
 
