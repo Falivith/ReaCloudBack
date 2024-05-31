@@ -1,8 +1,6 @@
 const { OAuth2Client } = require("google-auth-library");
 const authRouter = require('express').Router()
 const jwt = require("jsonwebtoken");
-const User = require('../models/user.js')
-const axios = require('axios');
 const { checkToken, createJWT, verifyGoogleToken, findOrCreateUser } = require("../controllers/authentication.js");
 
 const oAuth2Client = new OAuth2Client(

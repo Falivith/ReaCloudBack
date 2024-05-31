@@ -1,8 +1,7 @@
-const { Model, DataTypes } = require('sequelize');
-const { sequelize } = require('../database/db')
+const { sequelize } = require('../../app');
+const { DataTypes } = require('sequelize');
 
-class User extends Model {}
-User.init({
+const User = sequelize.define('User', {
   id: {
     type: DataTypes.TEXT,
     primaryKey: true,
@@ -32,7 +31,6 @@ User.init({
     unique: true
   },
 }, {
-  sequelize,
   underscored: true,
   timestamps: false,
   modelName: 'user',
@@ -50,7 +48,4 @@ User.prototype.toJSON = function () {
   return values;
 };
 
-User.sync({ logging: false });
-
-
-module.exports = User
+module.exports = User;

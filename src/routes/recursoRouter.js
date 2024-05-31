@@ -1,18 +1,19 @@
 const Recurso = require('../models/recurso');
+const Like = require('../models/like');
 const fs = require('fs');
 const util = require('../controllers/authentication');
 const recursoRouter = require('express').Router();
 const reaReceiver = require('../controllers/reaPictureMulter')
-const { Op } = require('sequelize');
+const { Op: operators, fn, col } = require('sequelize');
 
-// Consultar (Filtrar) dentre todos os recursos 
+// Consultar (filtrar) dentre todos os recursos 
 recursoRouter.get('/filter', async (req, res) => {
     let { title, knowledge_area, rea_type, currentPage = 1, pageSize = 10 } = req.query;
 
     const filters = {};
 
     if (title) {
-        filters.title = { [Op.iLike]: `%${title}%` };
+        filters.title = { [operators.iLike]: `%${title}%` };
     }
     if (knowledge_area) {
         filters.knowledgeArea = knowledge_area;
@@ -27,8 +28,18 @@ recursoRouter.get('/filter', async (req, res) => {
         const recursos = await Recurso.findAll({
             where: filters,
             offset: offset,
-            limit: pageSize
+            limit: pageSize,
+            /*include: [{
+                model: Like,
+                attributes: [[fn('COUNT', col('id')), 'numLikes']],
+                required: false // Mesmo que não contenham likes
+            }],
+            group: ['Recurso.id'] // Precisamos agrupar por Recurso.id para garantir que a contagem de likes seja correta*/
         });
+
+        /*recursos.forEach(recurso => {
+            console.log(`Recurso: ${recurso.id}, Likes: ${recurso.Likes ? recurso.Likes.numLikes : 0}`);
+        });*/
 
         res.json(recursos);
     } catch (error) {
@@ -37,7 +48,7 @@ recursoRouter.get('/filter', async (req, res) => {
     }
 });
 
-// Consultar todos os recursos
+// Consultar todos os recursos (só usar em testes)
 recursoRouter.get('/', async (req, res) => {
     const reas = await Recurso.findAll({
         logging: false
@@ -77,7 +88,7 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (req, res) => {
         const imageFile = fs.readFileSync(req.file.path);
         const buffer = Buffer.from(imageFile);
         const recurso = await Recurso.create({ ...req.body, user_id: decodedToken.id });
-        const recursoPronto = await recurso.update({
+        const recursoperatorsronto = await recurso.update({
             thumb: buffer
         }, { returning: true });
 
@@ -88,11 +99,11 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (req, res) => {
             }
         });
 
-        if (recursoPronto) {
-            res.status(201).json(recursoPronto);
+        if (recursoperatorsronto) {
+            res.status(201).json(recursoperatorsronto);
             console.log("Recurso cadastrado com sucesso.");
         } else {
-            res.status(400).json(recursoPronto);
+            res.status(400).json(recursoperatorsronto);
             console.log("Falha ao cadastrar recurso. (Database access failed)");
         }
     } else {
@@ -101,7 +112,7 @@ recursoRouter.post('/', reaReceiver.single('thumb'), async (req, res) => {
 });
 
 // Consultar os detalhes de um recurso
-recursoRouter.get('/resource/:id', async (req, res) => {
+recursoRouter.get('/:id', async (req, res) => {
 
     const resourceId = req.params.id;
     
@@ -145,6 +156,39 @@ recursoRouter.delete('/:id', async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Ocorreu um erro ao encontrar o recurso.' });
+    }
+});
+
+// Adicionar ou remover um like de um recurso para um usuário
+recursoRouter.post('/:recursoId/like', async (req, res) => {
+    try {
+        const decodedToken = await util.checkToken(req);
+        const userId = decodedToken.id;
+
+        const existingLike = await Like.findOne({
+            where: {
+                user_id: userId,
+                recurso_id: req.params.recursoId
+            }
+        });
+
+        if (existingLike) {
+            await existingLike.destroy();
+            return res.status(204).json({ message: 'Like removido com sucesso.' });
+        } else {
+            await Like.create({
+                user_id: userId,
+                recurso_id: req.params.recursoId
+            });
+            return res.status(201).json({ message: 'Like adicionado com sucesso.' });
+        }
+    } catch (error) {
+        if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError' || error.name === 'NotBeforeError') {
+            console.log('Usuario Não Logado');
+            return res.status(401).json({ error: 'Usuário não autenticado. Por favor, faça login novamente.' });
+        }
+        console.error(error);
+        return res.status(500).json({ error: 'Erro ao processar a solicitação de Like.' });
     }
 });
 

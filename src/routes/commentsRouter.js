@@ -1,7 +1,7 @@
 const express = require('express');
 const commentRouter = express.Router();
 const util = require('../controllers/authentication.js');
-const Comment = require('../models/comments.js');
+const Comment = require('../models/comment.js');
 const User = require('../models/user.js');
 
 const getCurrentDate = () => {
@@ -65,7 +65,9 @@ commentRouter.get('/:id', async (req, res) => {
         response = {
             comments: comments,
         }
+
         console.log('Comentarios', comments);
+        
         res.status(200).json(comments);
     } catch (error) {
         console.error('Erro ao obter os comentários:', error);

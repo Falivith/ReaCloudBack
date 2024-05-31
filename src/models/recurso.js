@@ -1,11 +1,9 @@
-const { Model, DataTypes } = require('sequelize');
-const { sequelize } = require('../database/db');
+const { sequelize } = require('../../app');
+const { DataTypes } = require('sequelize');
 const User = require('./user');
 const { tipoRecurso, publicoAlvo, areasConhecimento, tiposLicenca, idiomas } = require('./recursoProperties');
 
-class Recurso extends Model {}
-
-Recurso.init({
+const Recurso = sequelize.define('Recurso', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -25,29 +23,29 @@ Recurso.init({
   },
   reaType: {
     type: DataTypes.ENUM,
-    values: Object.values(tipoRecurso), // Usando os valores do objeto tipoRecurso
+    values: Object.values(tipoRecurso),
   },
   link: {
     type: DataTypes.STRING,
   },
   targetPublic: {
     type: DataTypes.ENUM,
-    values: Object.values(publicoAlvo), // Usando os valores do objeto publicoAlvo
+    values: Object.values(publicoAlvo),
   },
   thumb: {
     type: DataTypes.BLOB,
   },
   knowledgeArea: {
     type: DataTypes.ENUM,
-    values: Object.values(areasConhecimento), // Usando os valores do objeto areasConhecimento
+    values: Object.values(areasConhecimento),
   },
   license: {
     type: DataTypes.ENUM,
-    values: Object.values(tiposLicenca), // Usando os valores do objeto tiposLicenca
+    values: Object.values(tiposLicenca),
   },
   language: {
     type: DataTypes.ENUM,
-    values: Object.values(idiomas), // Usando os valores do objeto idiomas
+    values: Object.values(idiomas),
   },
   description: {
     type: DataTypes.TEXT,
@@ -56,19 +54,14 @@ Recurso.init({
     type: DataTypes.TEXT,
   },
 }, {
-  sequelize,
   underscored: true,
   timestamps: true,
   modelName: 'recurso',
 });
 
-Recurso.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
-
 Recurso.prototype.toJSON = function () {
   const values = Object.assign({}, this.get());
   return values;
 };
-
-Recurso.sync({ logging: false });
 
 module.exports = Recurso;
