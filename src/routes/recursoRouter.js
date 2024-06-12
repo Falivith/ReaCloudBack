@@ -3,7 +3,7 @@ const Like = require('../models/like');
 const fs = require('fs');
 const util = require('../controllers/authentication');
 const recursoRouter = require('express').Router();
-const reaReceiver = require('../controllers/reaPictureMulter')
+const { upload, resizeImage } = require('../controllers/reaPictureMulter')
 const { Op: operators, fn, col } = require('sequelize');
 
 // Consultar (filtrar) dentre todos os recursos 
@@ -95,35 +95,49 @@ recursoRouter.get('/user', async (req, res) => {
 
 
 // Postar um recurso
-recursoRouter.post('/', reaReceiver.single('thumb'), async (req, res) => {
-    const decodedToken = await util.checkToken(req)
+recursoRouter.post('/', upload, resizeImage, async (req, res) => {
+    const decodedToken = await util.checkToken(req);
 
-    if (req.body) {
-        const imageFile = fs.readFileSync(req.file.path);
-        const buffer = Buffer.from(imageFile);
-        const recurso = await Recurso.create({ ...req.body, user_id: decodedToken.id });
-        const recursoperatorsronto = await recurso.update({
-            thumb: buffer
-        }, { returning: true });
+    if (req.body && req.file) {
+        const imagePath = req.file.path;
 
-        fs.unlink(req.file.path, (err) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ error: 'Erro ao deletar o arquivo temporário' });
+        try {
+            const recurso = await Recurso.create({ ...req.body, user_id: decodedToken.id, thumb: imagePath });
+
+            if (recurso) {
+                res.status(201).json(recurso);
+                console.log("Recurso cadastrado com sucesso.");
+            } else {
+                // com esse fs.unlink ele deleta a imagem se der erro
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.error('Erro ao deletar o arquivo temporário', err);
+                    }
+                });
+                res.status(400).json({ error: "Falha ao cadastrar recurso. (Database access failed)" });
+                console.log("Falha ao cadastrar recurso. (Database access failed)");
             }
-        });
-
-        if (recursoperatorsronto) {
-            res.status(201).json(recursoperatorsronto);
-            console.log("Recurso cadastrado com sucesso.");
-        } else {
-            res.status(400).json(recursoperatorsronto);
-            console.log("Falha ao cadastrar recurso. (Database access failed)");
+        } catch (error) {
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.error('Erro ao deletar o arquivo temporário', err);
+                }
+            });
+            res.status(500).json({ error: 'Erro ao salvar o recurso.' });
+            console.error(error);
         }
     } else {
-        res.status(400).json("Falha ao cadastrar o recurso. (Null form received)");
+        if (req.file) {
+            fs.unlink(req.file.path, (err) => {
+                if (err) {
+                    console.error('Erro ao deletar o arquivo temporário', err);
+                }
+            });
+        }
+        res.status(400).json({ error: "Falha ao cadastrar o recurso." });
     }
 });
+
 
 // Consultar os detalhes de um recurso
 recursoRouter.get('/:id', async (req, res) => {

@@ -32,6 +32,8 @@ app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/recurso", recursoRouter);
 app.use("/api/comments", commentRouter);
+app.use('/uploads', express.static('uploads'));
+
 
 // Lança o front
 app.get("*", (req, res) => {

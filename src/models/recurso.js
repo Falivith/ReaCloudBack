@@ -33,7 +33,8 @@ const Recurso = sequelize.define('Recurso', {
     values: Object.values(publicoAlvo),
   },
   thumb: {
-    type: DataTypes.BLOB,
+    type: DataTypes.STRING,
+    allowNull: false
   },
   knowledgeArea: {
     type: DataTypes.ENUM,
