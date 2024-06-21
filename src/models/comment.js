@@ -11,12 +11,14 @@ const Comment = sequelize.define('Comment', {
     allowNull: false,
   },
   user_id: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(36),
     allowNull: false,
     references: {
       model: User,
       key: 'id',
     },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   },
   resource_id: {
     type: DataTypes.INTEGER,
@@ -25,6 +27,8 @@ const Comment = sequelize.define('Comment', {
       model: Recurso,
       key: 'id',
     },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   },
   comment: {
     type: DataTypes.TEXT,

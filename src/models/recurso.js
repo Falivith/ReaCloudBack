@@ -10,43 +10,45 @@ const Recurso = sequelize.define('Recurso', {
     autoIncrement: true,
   },
   user_id: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(36),
     allowNull: false,
     references: {
       model: User,
       key: 'id',
     },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   },
   title: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   reaType: {
-    type: DataTypes.ENUM,
-    values: Object.values(tipoRecurso),
+    type: DataTypes.ENUM(Object.values(tipoRecurso)),
+    allowNull: false,
   },
   link: {
     type: DataTypes.STRING,
   },
   targetPublic: {
-    type: DataTypes.ENUM,
-    values: Object.values(publicoAlvo),
+    type: DataTypes.ENUM(Object.values(publicoAlvo)),
+    allowNull: false,
   },
   thumb: {
     type: DataTypes.STRING,
     allowNull: false
   },
   knowledgeArea: {
-    type: DataTypes.ENUM,
-    values: Object.values(areasConhecimento),
+    type: DataTypes.ENUM(Object.values(areasConhecimento)),
+    allowNull: false,
   },
   license: {
-    type: DataTypes.ENUM,
-    values: Object.values(tiposLicenca),
+    type: DataTypes.ENUM(Object.values(tiposLicenca)),
+    allowNull: false,
   },
   language: {
-    type: DataTypes.ENUM,
-    values: Object.values(idiomas),
+    type: DataTypes.ENUM(Object.values(idiomas)),
+    allowNull: false,
   },
   description: {
     type: DataTypes.TEXT,

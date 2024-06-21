@@ -3,30 +3,30 @@ const { DataTypes } = require('sequelize');
 
 const User = sequelize.define('User', {
   id: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(36), // melhor colocar tamanho pra UUID
     primaryKey: true,
   },
   profilePicture: {
     type: DataTypes.STRING,
   },
   given_name: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   family_name: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   institution: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   profile: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   email: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },

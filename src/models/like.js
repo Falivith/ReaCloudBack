@@ -10,12 +10,14 @@ const Like = sequelize.define('Like', {
     autoIncrement: true,
   },
   user_id: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(36),
     allowNull: false,
     references: {
       model: User,
       key: 'id',
     },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   },
   recurso_id: {
     type: DataTypes.INTEGER,
@@ -24,12 +26,13 @@ const Like = sequelize.define('Like', {
       model: Recurso,
       key: 'id',
     },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   },
 }, {
   underscored: true,
   timestamps: true,
   modelName: 'like',
-  onDelete: 'CASCADE',
 });
 
 module.exports = Like;
