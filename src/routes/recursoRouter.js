@@ -3,7 +3,7 @@ const Like = require('../models/like');
 const fs = require('fs');
 const util = require('../controllers/authentication');
 const recursoRouter = require('express').Router();
-const { upload, resizeImage } = require('../controllers/reaPictureMulter')
+const { upload, resizeImage } = require('../controllers/reaPictureMulter');
 const { Op: operators, fn, col } = require('sequelize');
 
 // Consultar (filtrar) dentre todos os recursos 
@@ -13,7 +13,7 @@ recursoRouter.get('/filter', async (req, res) => {
     const filters = {};
 
     if (title) {
-        filters.title = { [operators.iLike]: `%${title}%` };
+        filters.title = { [operators.like]: `%${title}%` };
     }
     if (knowledge_area) {
         filters.knowledgeArea = knowledge_area;
@@ -66,13 +66,13 @@ recursoRouter.get('/filter', async (req, res) => {
 recursoRouter.get('/', async (req, res) => {
     const reas = await Recurso.findAll({
         logging: false
-    }) 
+    }); 
     res.status(201).json(reas);
 });
 
 // Consultar os recursos de um usuário
 recursoRouter.get('/user', async (req, res) => {
-    const decodedToken = await util.checkToken(req)
+    const decodedToken = await util.checkToken(req);
 
     const userId = decodedToken.id;
     
@@ -92,7 +92,6 @@ recursoRouter.get('/user', async (req, res) => {
         return res.status(500).json({ error: 'Erro na consulta de recursos.' });
     }
 });
-
 
 // Postar um recurso
 recursoRouter.post('/', upload, resizeImage, async (req, res) => {
@@ -138,10 +137,8 @@ recursoRouter.post('/', upload, resizeImage, async (req, res) => {
     }
 });
 
-
 // Consultar os detalhes de um recurso
 recursoRouter.get('/:id', async (req, res) => {
-
     const resourceId = req.params.id;
     
     try {
@@ -166,7 +163,7 @@ recursoRouter.delete('/:id', async (req, res) => {
     try {
         // Validar o usuário
         const resourceId = req.params.id;
-        const decodedToken = await util.checkToken(req)
+        const decodedToken = await util.checkToken(req);
         const userId = decodedToken.id;
 
         const recurso = await Recurso.findOne({
@@ -259,4 +256,4 @@ recursoRouter.get('/:recursoId/likes/count', async (req, res) => {
     }
 });
 
-module.exports = recursoRouter
+module.exports = recursoRouter;
