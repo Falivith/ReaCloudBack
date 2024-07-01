@@ -10,6 +10,10 @@ const { Op: operators, fn, col } = require('sequelize');
 recursoRouter.get('/filter', async (req, res) => {
     let { title, knowledge_area, rea_type, currentPage = 1, pageSize = 10 } = req.query;
 
+    // Parse currentPage and pageSize as integers
+    currentPage = parseInt(currentPage, 10);
+    pageSize = parseInt(pageSize, 10);
+
     const filters = {};
 
     if (title) {
