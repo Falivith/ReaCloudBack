@@ -47,10 +47,22 @@ commentRouter.post('/', async (req, res) => {
 commentRouter.get('/:id', async (req, res) => {
     try {
         const resourceId = req.params.id;
+        let { currentPage = 1, pageSize = 10 } = req.query;
+
+        // Parse currentPage and pageSize as integers
+        currentPage = parseInt(currentPage, 10);
+        pageSize = parseInt(pageSize, 10);
 
         if (!resourceId) {
             return res.status(400).json({ error: 'O parâmetro resourceId é obrigatório' });
         }
+
+        const offset = (currentPage - 1) * pageSize;
+
+        // Get the total count of comments for the resource
+        const totalComments = await Comment.count({ where: { resource_id: resourceId } });
+
+        // Get the paginated comments
         const comments = await Comment.findAll({
             where: {
                 resource_id: resourceId
@@ -58,19 +70,30 @@ commentRouter.get('/:id', async (req, res) => {
             include: [{
                 model: User,
                 attributes: ['given_name', 'profilePicture']
-            }]
+            }],
+            offset: offset,
+            limit: pageSize,
         });
 
-        response = {
+        // Calculate total pages
+        const totalPages = Math.ceil(totalComments / pageSize);
+
+        // Prepare the response
+        const response = {
             comments: comments,
-        }
+            currentPage: currentPage,
+            pageSize: pageSize,
+            totalComments: totalComments,
+            totalPages: totalPages,
+        };
         
-        res.status(200).json(comments);
+        res.status(200).json(response);
     } catch (error) {
         console.error('Erro ao obter os comentários:', error);
         res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
+
 
 // Deletar comentário
 commentRouter.delete('/:id', async (req, res) => {
