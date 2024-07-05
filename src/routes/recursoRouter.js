@@ -29,6 +29,10 @@ recursoRouter.get('/filter', async (req, res) => {
     const offset = (currentPage - 1) * pageSize;
 
     try {
+        // Get the total count of items matching the filters
+        const totalItems = await Recurso.count({ where: filters });
+
+        // Get the filtered items with pagination
         const recursos = await Recurso.findAll({
             where: filters,
             offset: offset,
@@ -59,12 +63,22 @@ recursoRouter.get('/filter', async (req, res) => {
             };
         });
 
-        res.json(recursosWithLikes);
+        // Calculate the total pages
+        const totalPages = Math.ceil(totalItems / pageSize);
+
+        res.json({
+            recursos: recursosWithLikes,
+            currentPage: currentPage,
+            pageSize: pageSize,
+            totalItems: totalItems,
+            totalPages: totalPages
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Ocorreu um erro com a filtragem dos recursos.' });
     }
 });
+
 
 // Consultar todos os recursos (só usar em testes)
 recursoRouter.get('/', async (req, res) => {
