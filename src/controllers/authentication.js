@@ -2,6 +2,7 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.js');
+const { UUID } = require('sequelize');
 
 async function verifyGoogleToken(token) {
   const ticket = await client.verifyIdToken({
@@ -52,8 +53,8 @@ async function findOrCreateUser(payload) {
     const [user, created] = await User.findOrCreate({
       where: { id: payload.sub },
       defaults: {
-        given_name: payload.given_name,
-        family_name: payload.family_name,
+        given_name: payload.given_name ?? UUID.UUID(),
+        family_name: payload.family_name ?? '',
         email: payload.email,
         institution: await getInstitutionFromHd(payload.hd),
         profilePicture: payload.picture,
