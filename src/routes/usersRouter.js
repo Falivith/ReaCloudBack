@@ -9,16 +9,29 @@ usersRouter.post('/uploadPhoto', upload.single('file'), resizeImage, usersContro
 
 // Consulta de foto de perfil
 usersRouter.get('/uploadPhoto', async (req, res) => {
-  const decodedToken = await util.checkToken(req)
+  try {
+    const decodedToken = await util.checkToken(req)
 
-  const user = await User.findByPk(decodedToken.id);
+    if (!decodedToken) {
+      return res.status(401).json({ error: "Usuário não autorizado." }); 
+    }
 
-  if (user.profilePicture) {
-    res.set('Content-Disposition', 'inline');
-    res.json({ data: user.profilePicture })
-  } else {
-    console.log('Foto não encontrada.');
-    return res.status(200);
+    const user = await User.findByPk(decodedToken.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    if (user.profilePicture) {
+      res.set('Content-Disposition', 'inline');
+      return res.status(200).json({ data: user.profilePicture })
+    } else {
+      console.log('Foto não encontrada.');
+      return res.status(200).json({ data: null });
+    }
+  } catch (err) {
+    console.error('Erro no upload da foto:', err);
+    return res.status(500).json({ error: 'Erro interno.' });
   }
 })
 

@@ -37,6 +37,9 @@ app.use('/uploads', express.static('uploads'));
 
 // Lança o front
 app.get("*", (req, res) => {
+  if (req.path.startsWith("/api")) {
+    return next(); // tem que fazer isso pra ele nao retornar HTML quando chama a API
+  }
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
