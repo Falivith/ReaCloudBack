@@ -92,9 +92,32 @@ async function getInstitutionFromHd(suffix) {
   return emailToInstitutionMap.get(suffix) || null;
 }
 
+const verifyUser = async (req, res, next) => {
+  try {
+    const decodedToken = await checkToken(req);
+
+    if (!decodedToken) {
+      return res.status(401).json({ error: "Usuário não autorizado." });
+    }
+
+    const user = await User.findByPk(decodedToken.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    req.user = user; // necessário para pegar o user depois
+    next(); // necessário pq ele é um middleware
+  } catch (err) {
+    console.error("Erro ao verificar o usuário:", err);
+    return res.status(500).json({ error: "Erro interno." });
+  }
+};
+
 module.exports = {
   verifyGoogleToken,
   createJWT,
   checkToken,
-  findOrCreateUser
+  findOrCreateUser,
+  verifyUser
 };
