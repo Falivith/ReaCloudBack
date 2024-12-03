@@ -1,6 +1,6 @@
 const express = require('express');
 const commentRouter = express.Router();
-const util = require('../controllers/authentication.js');
+const {checkToken, verifyUser} = require('../controllers/authentication');
 const Comment = require('../models/comment.js');
 const User = require('../models/user.js');
 
@@ -9,9 +9,9 @@ const getCurrentDate = () => {
 };
 
 // Postar comentário
-commentRouter.post('/', async (req, res) => {
+commentRouter.post('/', verifyUser, async (req, res) => {
     try {
-        const decodedToken = await util.checkToken(req);
+        const decodedToken = await checkToken(req);
         
         if (!decodedToken) {
             return res.status(401).json({ error: 'Token inválido ou expirado' });
@@ -21,11 +21,7 @@ commentRouter.post('/', async (req, res) => {
             return res.status(400).json({ error: 'O texto do comentário é obrigatório' });
         }
 
-        const user = await User.findByPk(decodedToken.id);
-
-        if (!user) {
-            return res.status(404).json({ error: 'Usuário não encontrado' });
-        }
+        const user = req.user;
 
         const comment = await Comment.create({
             comment: req.body.text,
@@ -35,11 +31,11 @@ commentRouter.post('/', async (req, res) => {
             created_at: getCurrentDate()
         });
 
-        res.status(201).json(comment);
         console.log('Comentário recebido e salvo com sucesso:', comment);
+        return res.status(201).json(comment);
     } catch (error) {
         console.error('Erro ao receber e salvar o comentário:', error);
-        res.status(500).json({ error: 'Erro interno do servidor' });
+        return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
 
@@ -96,10 +92,10 @@ commentRouter.get('/:id', async (req, res) => {
 
 
 // Deletar comentário
-commentRouter.delete('/:id', async (req, res) => {
+commentRouter.delete('/:id', verifyUser, async (req, res) => {
     try {
         const commentId = req.params.id;
-        const decodedToken = await util.checkToken(req);
+        const decodedToken = await checkToken(req);
 
         if (!decodedToken) {
             return res.status(401).json({ error: 'Token inválido ou expirado' });
@@ -118,11 +114,11 @@ commentRouter.delete('/:id', async (req, res) => {
 
         // Se o usuário for o autor do comentário, proceda com a exclusão
         await comment.destroy();
-        res.status(204).end(); // Retorna 204 No Content para indicar que o comentário foi deletado com sucesso
         console.log('Comentário deletado com sucesso:', commentId);
+        return res.status(204).end(); // Retorna 204 No Content para indicar que o comentário foi deletado com sucesso
     } catch (error) {
         console.error('Erro ao deletar o comentário:', error);
-        res.status(500).json({ error: 'Erro interno do servidor' });
+        return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
 
