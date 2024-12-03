@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const {util, verifyUser} = require('../controllers/authentication');
+const {verifyUser} = require('../controllers/authentication');
 const usersRouter = require('express').Router()
 const { upload, resizeImage } = require('../controllers/userPictureMulter')
 const usersController = require('../controllers/usersController');

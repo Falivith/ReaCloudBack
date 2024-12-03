@@ -1,7 +1,7 @@
 const Recurso = require('../models/recurso');
 const Like = require('../models/like');
 const fs = require('fs');
-const util = require('../controllers/authentication');
+const {checkToken, verifyUser} = require('../controllers/authentication');
 const recursoRouter = require('express').Router();
 const { upload, resizeImage } = require('../controllers/reaPictureMulter');
 const { Op: operators, fn, col } = require('sequelize');
@@ -90,7 +90,7 @@ recursoRouter.get('/', async (req, res) => {
 
 // Consultar os recursos de um usuário
 recursoRouter.get('/user', async (req, res) => {
-    const decodedToken = await util.checkToken(req);
+    const decodedToken = await checkToken(req);
 
     const userId = decodedToken.id;
     
@@ -112,8 +112,8 @@ recursoRouter.get('/user', async (req, res) => {
 });
 
 // Postar um recurso
-recursoRouter.post('/', upload, resizeImage, async (req, res) => {
-    const decodedToken = await util.checkToken(req);
+recursoRouter.post('/', verifyUser, upload, resizeImage, async (req, res) => {
+    const decodedToken = await checkToken(req);
 
     if (req.body && req.file) {
         const imagePath = req.file.path;
@@ -122,8 +122,8 @@ recursoRouter.post('/', upload, resizeImage, async (req, res) => {
             const recurso = await Recurso.create({ ...req.body, user_id: decodedToken.id, thumb: imagePath });
 
             if (recurso) {
-                res.status(201).json(recurso);
                 console.log("Recurso cadastrado com sucesso.");
+                return res.status(201).json(recurso);
             } else {
                 // com esse fs.unlink ele deleta a imagem se der erro
                 fs.unlink(imagePath, (err) => {
@@ -131,8 +131,8 @@ recursoRouter.post('/', upload, resizeImage, async (req, res) => {
                         console.error('Erro ao deletar o arquivo temporário', err);
                     }
                 });
-                res.status(400).json({ error: "Falha ao cadastrar recurso. (Database access failed)" });
                 console.log("Falha ao cadastrar recurso. (Database access failed)");
+                return res.status(400).json({ error: "Falha ao cadastrar recurso. (Database access failed)" });
             }
         } catch (error) {
             fs.unlink(imagePath, (err) => {
@@ -140,8 +140,8 @@ recursoRouter.post('/', upload, resizeImage, async (req, res) => {
                     console.error('Erro ao deletar o arquivo temporário', err);
                 }
             });
-            res.status(500).json({ error: 'Erro ao salvar o recurso.' });
             console.error(error);
+            return res.status(500).json({ error: 'Erro ao salvar o recurso.' });
         }
     } else {
         if (req.file) {
@@ -151,7 +151,7 @@ recursoRouter.post('/', upload, resizeImage, async (req, res) => {
                 }
             });
         }
-        res.status(400).json({ error: "Falha ao cadastrar o recurso." });
+        return res.status(400).json({ error: "Falha ao cadastrar o recurso." });
     }
 });
 
@@ -177,11 +177,11 @@ recursoRouter.get('/:id', async (req, res) => {
 });
 
 // Deletar um recurso
-recursoRouter.delete('/:id', async (req, res) => {
+recursoRouter.delete('/:id', verifyUser, async (req, res) => {
     try {
         // Validar o usuário
         const resourceId = req.params.id;
-        const decodedToken = await util.checkToken(req);
+        const decodedToken = await checkToken(req);
         const userId = decodedToken.id;
 
         const recurso = await Recurso.findOne({
@@ -204,7 +204,7 @@ recursoRouter.delete('/:id', async (req, res) => {
 
 recursoRouter.get('/:recursoId/liked', async (req, res) => {
     try {
-        const decodedToken = await util.checkToken(req);
+        const decodedToken = await checkToken(req);
         const userId = decodedToken.id;
 
         const existingLike = await Like.findOne({
@@ -226,9 +226,9 @@ recursoRouter.get('/:recursoId/liked', async (req, res) => {
 });
 
 // Adicionar ou remover um like de um recurso para um usuário
-recursoRouter.post('/:recursoId/like', async (req, res) => {
+recursoRouter.post('/:recursoId/like', verifyUser, async (req, res) => {
     try {
-        const decodedToken = await util.checkToken(req);
+        const decodedToken = await checkToken(req);
         const userId = decodedToken.id;
 
         const existingLike = await Like.findOne({
