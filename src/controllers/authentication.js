@@ -94,23 +94,27 @@ async function getInstitutionFromHd(suffix) {
 
 const verifyUser = async (req, res, next) => {
   try {
-    const decodedToken = await checkToken(req);
+    const token = req.headers.authorization?.split(' ')[1];
 
-    if (!decodedToken) {
-      return res.status(401).json({ error: "Usuário não autorizado." });
+    if (!token) {
+      return res.status(401).json({ error: 'Usuário não autorizado.' });
     }
 
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(decodedToken.id);
 
     if (!user) {
-      return res.status(404).json({ error: "Usuário não encontrado." });
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
     }
 
-    req.user = user; // necessário para pegar o user depois
-    next(); // necessário pq ele é um middleware
-  } catch (err) {
-    console.error("Erro ao verificar o usuário:", err);
-    return res.status(500).json({ error: "Erro interno." });
+    req.user = user;
+    next();
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expirado. Por favor, faça login novamente.' });
+    }
+    console.error('Erro ao verificar o usuário:', error);
+    return res.status(500).json({ error: 'Erro interno.' });
   }
 };
 
