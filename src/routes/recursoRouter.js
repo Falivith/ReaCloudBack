@@ -89,10 +89,10 @@ recursoRouter.get('/', async (req, res) => {
 });
 
 // Consultar os recursos de um usuário
-recursoRouter.get('/user', async (req, res) => {
-    const decodedToken = await checkToken(req);
+recursoRouter.get('/user', verifyUser, async (req, res) => {
+    const user = req.user;
 
-    const userId = decodedToken.id;
+    const userId = user.id;
     
     try {
         const reas = await Recurso.findAll({
