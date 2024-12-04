@@ -5,8 +5,9 @@ const { upload, resizeImage } = require('../controllers/userPictureMulter')
 const usersController = require('../controllers/usersController');
 
 
-// Upload de foto de perfil
-usersRouter.post('/uploadPhoto', verifyUser, upload.single('file'), resizeImage, usersController.uploadProfilePicture);
+// // Upload de foto de perfil
+// usersRouter.post('/uploadPhoto', verifyUser, upload.single('file'), resizeImage, usersController.uploadProfilePicture);
+// como a foto é pega do google API não precisa disso
 
 // Consulta de foto de perfil
 usersRouter.get('/uploadPhoto', verifyUser, async (req, res) => {
