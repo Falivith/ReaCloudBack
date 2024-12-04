@@ -181,8 +181,8 @@ recursoRouter.delete('/:id', verifyUser, async (req, res) => {
     try {
         // Validar o usuário
         const resourceId = req.params.id;
-        const decodedToken = await checkToken(req);
-        const userId = decodedToken.id;
+        const user = req.user;
+        const userId = user.id;
 
         const recurso = await Recurso.findOne({
             where: { id: resourceId, user_id: userId }, // Adicione a condição para verificar o user_id
@@ -202,10 +202,10 @@ recursoRouter.delete('/:id', verifyUser, async (req, res) => {
     }
 });
 
-recursoRouter.get('/:recursoId/liked', async (req, res) => {
+recursoRouter.get('/:recursoId/liked', verifyUser, async (req, res) => {
     try {
-        const decodedToken = await checkToken(req);
-        const userId = decodedToken.id;
+        const user = req.user;
+        const userId = user.id;
 
         const existingLike = await Like.findOne({
             where: {
@@ -228,8 +228,8 @@ recursoRouter.get('/:recursoId/liked', async (req, res) => {
 // Adicionar ou remover um like de um recurso para um usuário
 recursoRouter.post('/:recursoId/like', verifyUser, async (req, res) => {
     try {
-        const decodedToken = await checkToken(req);
-        const userId = decodedToken.id;
+        const user = req.user;
+        const userId = user.id;
 
         const existingLike = await Like.findOne({
             where: {
