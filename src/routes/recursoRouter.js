@@ -214,7 +214,20 @@ recursoRouter.delete("/:id", verifyUser, async (req, res) => {
         .json({ error: "O recurso com esse ID não foi encontrado." });
     }
 
+    const thumbPath = recurso.thumb; //tem que ser antes do destroy!!
+
     await recurso.destroy();
+
+    // Para deletar a thumb
+    if (thumbPath) {
+      fs.unlink(thumbPath, (err) => {
+        if (err) {
+          console.error("Erro ao deletar o thumbnail:", err);
+        } else {
+          console.log("Thumbnail deletado com sucesso:", thumbPath);
+        }
+      });
+    }
 
     return res.status(204).send();
   } catch (error) {
