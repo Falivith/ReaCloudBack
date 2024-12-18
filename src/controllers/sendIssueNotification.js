@@ -17,7 +17,7 @@ const sendIssueNotification = async (issue, resource, user) => {
       <h2>New Issue Reported</h2>
       <p><strong>Resource:</strong> ${resource.title}</p>
       <p><strong>Resource ID:</strong> ${resource.id}</p>
-      <p><strong>Reported by:</strong> ${user.email}</p>
+      <p><strong>Reported by:</strong> ${user.given_name}</p>
       <p><strong>Description:</strong> ${issue.description}</p>
     `
   };
