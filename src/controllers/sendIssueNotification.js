@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 
 const sendIssueNotification = async (issue, resource, user) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: user.email,
     to: process.env.ADMIN_EMAIL,
     subject: `New Issue Report - Resource ${resource.title}`,
     html: `
