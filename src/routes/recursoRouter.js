@@ -5,6 +5,7 @@ const { checkToken, verifyUser } = require("../controllers/authentication");
 const recursoRouter = require("express").Router();
 const { upload, resizeImage } = require("../controllers/reaPictureMulter");
 const { Op: operators, fn, col } = require("sequelize");
+const {sendIssueNotification} = require("../controllers/sendIssueNotification");
 
 // Consultar (filtrar) dentre todos os recursos
 recursoRouter.get("/filter", async (req, res) => {
@@ -316,6 +317,46 @@ recursoRouter.get("/:recursoId/likes/count", async (req, res) => {
       .status(500)
       .json({ error: "Ocorreu um erro ao obter a contagem de likes." });
   }
+});
+
+// reportar um problema com um recurso
+recursoRouter.post("/:recursoId/report", verifyUser, async (req, res) => {
+  try {
+    const recurso_id = req.params.recursoId;
+    const description = req.body.issue;
+    const user = req.user;
+    const user_id = user.id;
+
+    const recurso = await Recurso.findOne({
+      where: { id: recurso_id},
+      logging: false,
+    });
+
+    if (!recurso) {
+      return res
+        .status(404)
+        .json({ error: "O recurso com esse ID não foi encontrado." });
+    }
+
+    const newIssue = await recurso.createIssue({
+      recurso_id,
+      user_id,
+      description
+    });
+
+    // Send email notification
+    await sendIssueNotification(newIssue, recurso, user);
+
+    return res.status(201).json({
+      message: "Problema reportado com sucesso"
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "Ocorreu um erro ao enviar o problema." });
+  }  
 });
 
 module.exports = recursoRouter;

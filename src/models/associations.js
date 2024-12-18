@@ -2,6 +2,7 @@ const User = require('./user');
 const Recurso = require('./recurso');
 const Like = require('./like');
 const Comment = require('./comment');
+const Issue = require('./issue');
 
 User.hasMany(Recurso, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 Recurso.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id', onDelete: 'CASCADE' });
@@ -17,3 +18,9 @@ Comment.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id', onDelete: 'CAS
 
 Recurso.hasMany(Comment, { foreignKey: 'resource_id', onDelete: 'CASCADE' });
 Comment.belongsTo(Recurso, { foreignKey: 'resource_id', targetKey: 'id', onDelete: 'CASCADE' });
+
+Recurso.hasMany(Issue, { foreignKey: 'recurso_id', onDelete: 'CASCADE' });
+Issue.belongsTo(Recurso, { foreignKey: 'recurso_id', targetKey: 'id' });
+
+User.hasMany(Issue, { foreignKey: 'user_id', onDelete: 'CASCADE' });
+Issue.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
