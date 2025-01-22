@@ -239,6 +239,7 @@ recursoRouter.delete("/:id", verifyUser, async (req, res) => {
   }
 });
 
+//Num de likes de um recurso
 recursoRouter.get("/:recursoId/liked", verifyUser, async (req, res) => {
   try {
     const user = req.user;
@@ -357,6 +358,74 @@ recursoRouter.post("/:recursoId/report", verifyUser, async (req, res) => {
       .status(500)
       .json({ error: "Ocorreu um erro ao enviar o problema." });
   }  
+});
+
+// editar um recurso
+recursoRouter.put("/:id", verifyUser, upload, resizeImage, async (req, res) => {
+  const decodedToken = await checkToken(req);
+  const recursoId = req.params.id;
+
+  try {
+    // Find existing resource
+    const existingResource = await Recurso.findOne({
+      where: { 
+        id: recursoId,
+        user_id: decodedToken.id 
+      }
+    });
+
+    if (!existingResource) {
+      if (req.file) {
+        fs.unlink(req.file.path, (err) => {
+          if (err) console.error("Erro ao deletar arquivo temporário", err);
+        });
+      }
+      return res.status(404).json({ error: "Recurso não encontrado ou não autorizado" });
+    }
+
+    // Prepare update data
+    const updateData = { ...req.body };
+    
+    // Handle image update if provided
+    if (req.file) {
+      // Delete old image
+      if (existingResource.thumb) {
+        fs.unlink(existingResource.thumb, (err) => {
+          if (err) console.error("Erro ao deletar imagem antiga", err);
+        });
+      }
+      updateData.thumb = req.file.path;
+    }
+
+    // Update resource
+    const [updated] = await Recurso.update(updateData, {
+      where: { 
+        id: recursoId,
+        user_id: decodedToken.id 
+      }
+    });
+
+    if (updated) {
+      const updatedResource = await Recurso.findByPk(recursoId);
+      return res.status(200).json(updatedResource);
+    } else {
+      if (req.file) {
+        fs.unlink(req.file.path, (err) => {
+          if (err) console.error("Erro ao deletar arquivo temporário", err);
+        });
+      }
+      return res.status(400).json({ error: "Falha ao atualizar recurso" });
+    }
+
+  } catch (error) {
+    if (req.file) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error("Erro ao deletar arquivo temporário", err);
+      });
+    }
+    console.error(error);
+    return res.status(500).json({ error: "Erro ao atualizar o recurso" });
+  }
 });
 
 module.exports = recursoRouter;
