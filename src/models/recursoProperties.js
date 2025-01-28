@@ -16,6 +16,7 @@ module.exports.publicoAlvo = {
 };
 
 module.exports.areasConhecimento = {
+    All: "Todos",
     Languages: "Linguagens",
     Mathematics: "Matemática",
     NaturalSciences: "Ciências da Natureza",

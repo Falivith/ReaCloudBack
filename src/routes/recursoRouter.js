@@ -11,8 +11,8 @@ const {sendIssueNotification} = require("../controllers/sendIssueNotification");
 recursoRouter.get("/filter", async (req, res) => {
   let {
     title,
-    knowledge_area,
-    rea_type,
+    subject,
+    type,
     currentPage = 1,
     pageSize = 10,
   } = req.query;
@@ -26,11 +26,11 @@ recursoRouter.get("/filter", async (req, res) => {
   if (title) {
     filters.title = { [operators.like]: `%${title}%` };
   }
-  if (knowledge_area) {
-    filters.knowledgeArea = knowledge_area;
+  if (subject) {
+    filters.subject = subject;
   }
-  if (rea_type) {
-    filters.reaType = rea_type;
+  if (type) {
+    filters.type = type;
   }
 
   const offset = (currentPage - 1) * pageSize;
