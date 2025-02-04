@@ -86,4 +86,25 @@ usersRouter.put('/:email', verifyUser,  async (req, res) => {
   }
 });
 
+// ...existing code...
+
+// Delete user account
+usersRouter.delete('/:email', verifyUser, async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    // Delete user
+    await user.destroy();
+    return res.status(204).send();
+    
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 module.exports = usersRouter
